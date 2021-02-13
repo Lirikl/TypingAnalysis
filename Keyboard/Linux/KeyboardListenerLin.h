@@ -38,7 +38,9 @@ public:
   int exec();
 private:
   Display *X11Display_;
+  XkbDescPtr XkbDesc;
   int xi_opcode_;
+  int extractEventInfo(XGenericEventCookie *);
   // Implementation details
 };
 
