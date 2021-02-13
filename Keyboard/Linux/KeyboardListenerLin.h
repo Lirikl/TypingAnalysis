@@ -11,6 +11,7 @@
 #include <X11/extensions/XInput2.h>
 #include <X11/keysym.h>
 #include <X11/Xlib.h>
+
 namespace NSApplication {
 namespace NSKeyboard {
 
@@ -39,6 +40,8 @@ public:
   int exec();
 
 private:
+  Display *X11Display_;
+  int xi_opcode_;
   // Implementation details
 };
 
