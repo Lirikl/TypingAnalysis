@@ -5,7 +5,12 @@
 
 #include <QObject>
 #include <future>
-
+#include <QThread>
+#include <locale.h>
+#include <X11/XKBlib.h>
+#include <X11/extensions/XInput2.h>
+#include <X11/keysym.h>
+#include <X11/Xlib.h>
 namespace NSApplication {
 namespace NSKeyboard {
 
