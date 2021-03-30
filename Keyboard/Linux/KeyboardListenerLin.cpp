@@ -1,4 +1,5 @@
 #include "KeyboardListenerLin.h"
+#include <xkbcommon/xkbcommon.h>
 
 #include "Keyboard/KeyboardHandler.h"
 
@@ -22,7 +23,7 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   }
   Window X11DefaultWindow = DefaultRootWindow(X11Display_);
   XIEventMask X11EventMask_;
-  X11EventMask_.deviceid = XIAllDevices;
+  X11EventMask_.deviceid = XIAllDvieces;
   X11EventMask_.mask_len = XIMaskLen(XI_LASTEVENT);
   std::vector<unsigned char> safeArray(X11EventMask_.mask_len);
   X11EventMask_.mask = safeArray.data();
@@ -71,6 +72,7 @@ int CKeyboardListenerLinImpl::exec() {
 
 int CKeyboardListenerLinImpl::extractEventInfo(XGenericEventCookie *X11CurrentEventCookie) {
   auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+  auto time = X11CurrentDeviceEvent->time;
   int effective_group = X11CurrentDeviceEvent->group.effective;
   if (effective_group >= (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].group_info)
     effective_group = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].group_info - 1;
