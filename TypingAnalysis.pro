@@ -144,6 +144,11 @@ linux {
 
     SOURCES += \
     Keyboard/Linux/KeyboardListenerLin.cpp
+
+    LIBS += -lX11 \
+            -lXi \
+            -lxcb \
+            -lxkbcommon
 }
 
 contains(DEFINES, KEYBOARD_HANDLER_DEBUG) {
