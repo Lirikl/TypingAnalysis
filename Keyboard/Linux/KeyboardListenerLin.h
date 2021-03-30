@@ -7,6 +7,8 @@
 #include <QObject>
 #include <QThread>
 #include <locale.h>
+#include <xkbcommon/xkbcommon.h>
+#include <xkbcommon/xkbcommon-compose.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/XInput2.h>
 #include <X11/keysym.h>
