@@ -34,9 +34,9 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XkbDesc  = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
   const char* locale;
   locale = setlocale(LC_ALL,"");
-  auto XkbContext =  xkb_context_new(XKB_CONTEXT_NO_FLAGS);
-  auto XkbComposeTable = xkb_compose_table_new_from_locale(XkbContext,locale, XKB_COMPOSE_COMPILE_NO_FLAGS);
-  auto XkbComposeState = xkb_compose_state_new(XkbComposeTable, XKB_COMPOSE_STATE_NO_FLAGS);
+  XkbContext =  xkb_context_new(XKB_CONTEXT_NO_FLAGS);
+  XkbComposeTable = xkb_compose_table_new_from_locale(XkbContext,locale, XKB_COMPOSE_COMPILE_NO_FLAGS);
+  XkbComposeState = xkb_compose_state_new(XkbComposeTable, XKB_COMPOSE_STATE_NO_FLAGS);
 
   // TO DO
   // Set killerPromise to a non-trivial one
