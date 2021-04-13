@@ -3,6 +3,8 @@
 
 #include "Keyboard/AnyKeyboardKiller.h"
 
+#include <iostream>
+#include <future>
 #include <QObject>
 #include <future>
 #include <QThread>
@@ -50,6 +52,9 @@ private:
   struct xkb_compose_state* XkbComposeState;
 
   int extractEventInfo(XGenericEventCookie *);
+  int keyPressEvent(XGenericEventCookie *);
+  int keyReleaseEvent(XGenericEventCookie *);
+
   // Implementation details
 };
 

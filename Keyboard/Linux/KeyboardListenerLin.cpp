@@ -73,34 +73,61 @@ int CKeyboardListenerLinImpl::exec() {
 }
 
 int CKeyboardListenerLinImpl::extractEventInfo(XGenericEventCookie *X11CurrentEventCookie) {
-  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
-  auto time = X11CurrentDeviceEvent->time;
-  int effective_group = X11CurrentDeviceEvent->group.effective;
-  if (effective_group >= (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].group_info)
-    effective_group = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].group_info - 1;
-  int width = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].width;
-  int effective_mods = X11CurrentDeviceEvent->mods.effective;
-  int kt = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].kt_index[effective_group];
-  int shift_level = 0;
-  effective_mods = effective_mods & XkbDesc->map->types[kt].mods.mask;
-  for (int i = 0; i < XkbDesc->map->types[kt].map_count; i++) {
-    if (XkbDesc->map->types[kt].map[i].mods.mask == effective_mods) {
-      shift_level = XkbDesc->map->types[kt].map[i].level;
-      break;
-    }
-   }
   if (X11CurrentEventCookie->evtype == XI_KeyPress) {
-
+        keyPressEvent(X11CurrentEventCookie);
     //   std::cout << "KeyPressed, Symbol: " <<
       //              XKeysymToString(XkbDesc->map->syms[effective_group * width + shift_level +
        //                    (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].offset]) << std::endl;
    }
    if (X11CurrentEventCookie->evtype == XI_KeyRelease) {
+      keyReleaseEvent(X11CurrentEventCookie);
      //  std::cout << "KeyReleased, Symbol: " <<
 //                        XKeysymToString(XkbDesc->map->syms[effective_group * width + shift_level +
      //               (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].offset]) << std::endl;
    }
    XFreeEventData(X11Display_, X11CurrentEventCookie);
+   return 0;
+}
+
+int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEventCookie) {
+  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+  int effective_group = X11CurrentDeviceEvent->group.effective;
+  if (effective_group >= (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].group_info)
+          effective_group = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].group_info - 1;
+  int width = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].width;
+  int effective_mods = X11CurrentDeviceEvent->mods.effective;
+  int kt = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].kt_index[effective_group];
+  int shift_level = 0;//(int)XkbDesc->map->types->map[effective_group].level;
+
+  std::cout << effective_mods << ' ' <<  (int)XkbDesc->map->types[kt].mods.mask
+            << ' ' << (XkbDesc->map->types[kt].mods.mask & effective_mods)<< std::endl;
+  effective_mods = effective_mods & XkbDesc->map->types[kt].mods.mask;
+  for (int i = 0; i < XkbDesc->map->types[kt].map_count; i++) {
+      if (XkbDesc->map->types[kt].map[i].mods.mask == effective_mods) {
+          shift_level = XkbDesc->map->types[kt].map[i].level;
+          break;
+      }
+  }
+  auto keysym =XkbDesc->map->syms[effective_group * width + shift_level +
+      (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].offset];
+
+  auto XkbComposeFeedResult = xkb_compose_state_feed(XkbComposeState, keysym);
+  auto compose_status =xkb_compose_state_get_status(XkbComposeState);
+  std::cout << "cmp status: " <<compose_status<<std::endl;
+  char result_string[10];
+
+
+  int result_string_len = 0;
+  xkb_compose_state_get_utf8(XkbComposeState, result_string, 20);
+  if(compose_status == 2 && XkbComposeFeedResult == XKB_COMPOSE_FEED_ACCEPTED) {
+    keysym = xkb_compose_state_get_one_sym(XkbComposeState);
+  }
+  result_string_len = xkb_keysym_to_utf8(keysym, result_string, 10);
+  result_string[result_string_len] = '\0';
+  return 0;
+}
+
+int CKeyboardListenerLinImpl::keyReleaseEvent(XGenericEventCookie *X11CurrentEventCookie) {
    return 0;
 }
 // TO DO
