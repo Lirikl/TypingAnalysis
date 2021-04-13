@@ -42,6 +42,10 @@ private:
   Display *X11Display_;
   XkbDescPtr XkbDesc;
   int xi_opcode_;
+  struct xkb_context* XkbContext;
+  struct xkb_compose_table* XkbComposeTable;
+  struct xkb_compose_state* XkbComposeState;
+
   int extractEventInfo(XGenericEventCookie *);
   // Implementation details
 };
