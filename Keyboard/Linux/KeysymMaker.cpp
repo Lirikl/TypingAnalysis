@@ -11,6 +11,13 @@ namespace NSLinux {
     XkbComposeTable = xkb_compose_table_new_from_locale(XkbContext, locale, XKB_COMPOSE_COMPILE_NO_FLAGS);
     XkbComposeState = xkb_compose_state_new(XkbComposeTable, XKB_COMPOSE_STATE_NO_FLAGS);
   }
+
+  CKeysymMaker::~CKeysymMaker() {
+    xkb_context_unref(XkbContext);
+    xkb_compose_table_unref(XkbComposeTable);
+    xkb_compose_state_unref(XkbComposeState);
+  }
+
   std::optional<xkb_keysym_t> CKeysymMaker::feedEvent(XIDeviceEvent* DeviceEvent) {
     int effective_group = DeviceEvent->group.effective;
     if (effective_group >= (int)XkbDesc->map->key_sym_map[DeviceEvent->detail].group_info)
