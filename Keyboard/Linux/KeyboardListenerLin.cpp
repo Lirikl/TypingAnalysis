@@ -84,20 +84,23 @@ int CKeyboardListenerLinImpl::extractEventInfo(XGenericEventCookie *X11CurrentEv
 }
 
 int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEventCookie) {
-  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data); 
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
+  Time cur_time = X11CurrentDeviceEvent->time;
   QString qstr;
   if (keysym.has_value) {
     char result_string[10];
     int result_string_len = xkb_keysym_to_utf8(keysym.value(), result_string, 10);
-    QString::formUtf8(result_string, result_string_len)
-  } else {
+    QString::fromUtf8(result_string, result_string_len);
   }
   return 0;
 }
 
 int CKeyboardListenerLinImpl::keyReleaseEvent(XGenericEventCookie *X11CurrentEventCookie) {
-   return 0;
+  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+  auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
+  Time cur_time = X11CurrentDeviceEvent->time;
+
 }
 // TO DO
 // a specific ctor of CKiller
