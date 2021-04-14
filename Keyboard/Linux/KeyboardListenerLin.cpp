@@ -30,6 +30,7 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
   XSync(X11Display_, false);
   XkbDesc  = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
+  KeysymMaker_ = CKeysymMaker(XkbDesc);
   //const char* locale;
   //locale = setlocale(LC_ALL,"");
   //XkbContext =  xkb_context_new(XKB_CONTEXT_NO_FLAGS);
@@ -87,7 +88,7 @@ int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEvent
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
   Time cur_time = X11CurrentDeviceEvent->time;
   QString qstr;
-  if (keysym.has_value) {
+  if (keysym.has_value()) {
     char result_string[10];
     int result_string_len = xkb_keysym_to_utf8(keysym.value(), result_string, 10);
     QString::fromUtf8(result_string, result_string_len);
