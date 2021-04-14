@@ -52,6 +52,7 @@ CKeyboardListenerLinImpl::~CKeyboardListenerLinImpl() {
   disconnect(this, &CKeyboardListenerLinImpl::KeyPressing, nullptr, nullptr);
   disconnect(this, &CKeyboardListenerLinImpl::KeyReleasing, nullptr, nullptr);
   XkbFreeKeyboard(XkbDesc, XkbAllComponentsMask, 1);
+  XCloseDisplay(X11Display_);
 }
 
 int CKeyboardListenerLinImpl::exec() {

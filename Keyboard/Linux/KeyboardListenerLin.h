@@ -2,6 +2,7 @@
 #define NSAPPLICATION_NSKEYBOARD_NSLINUX_CKEYBOARDLISTENERLIN_H
 
 #include "Keyboard/AnyKeyboardKiller.h"
+#include "KeysymMaker.h"
 
 #include <iostream>
 #include <future>
