@@ -98,7 +98,6 @@ int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEvent
 
 int CKeyboardListenerLinImpl::keyReleaseEvent(XGenericEventCookie *X11CurrentEventCookie) {
   auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
-  auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
   Time cur_time = X11CurrentDeviceEvent->time;
 
 }

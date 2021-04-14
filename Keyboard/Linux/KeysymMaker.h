@@ -22,6 +22,7 @@ namespace NSLinux {
 class CKeysymMaker {
 public:
   CKeysymMaker(XkbDescPtr);
+  ~CKeysymMaker();
   std::optional<xkb_keysym_t>feedEvent(XIDeviceEvent*);
 private:
   struct xkb_context* XkbContext;
