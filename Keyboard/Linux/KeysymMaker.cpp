@@ -3,6 +3,9 @@
 namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
+
+  CKeysymMaker::CKeysymMaker() {}
+
   CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc_) {
     XkbDesc = XkbDesc_;
     const char* locale;
