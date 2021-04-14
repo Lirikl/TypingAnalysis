@@ -30,11 +30,11 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
   XSync(X11Display_, false);
   XkbDesc  = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
-  const char* locale;
-  locale = setlocale(LC_ALL,"");
-  XkbContext =  xkb_context_new(XKB_CONTEXT_NO_FLAGS);
-  XkbComposeTable = xkb_compose_table_new_from_locale(XkbContext, locale, XKB_COMPOSE_COMPILE_NO_FLAGS);
-  XkbComposeState = xkb_compose_state_new(XkbComposeTable, XKB_COMPOSE_STATE_NO_FLAGS);
+  //const char* locale;
+  //locale = setlocale(LC_ALL,"");
+  //XkbContext =  xkb_context_new(XKB_CONTEXT_NO_FLAGS);
+  //XkbComposeTable = xkb_compose_table_new_from_locale(XkbContext, locale, XKB_COMPOSE_COMPILE_NO_FLAGS);
+  //XkbComposeState = xkb_compose_state_new(XkbComposeTable, XKB_COMPOSE_STATE_NO_FLAGS);
 
   // TO DO
   // Set killerPromise to a non-trivial one
@@ -83,36 +83,14 @@ int CKeyboardListenerLinImpl::extractEventInfo(XGenericEventCookie *X11CurrentEv
 
 int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEventCookie) {
   auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
-  int effective_group = X11CurrentDeviceEvent->group.effective;
-  if (effective_group >= (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].group_info)
-          effective_group = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].group_info - 1;
-  int width = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].width;
-  int effective_mods = X11CurrentDeviceEvent->mods.effective;
-  int kt = (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].kt_index[effective_group];
-  int shift_level = 0;
-  effective_mods = effective_mods & XkbDesc->map->types[kt].mods.mask;
-  for (int i = 0; i < XkbDesc->map->types[kt].map_count; i++) {
-      if (XkbDesc->map->types[kt].map[i].mods.mask == effective_mods) {
-          shift_level = XkbDesc->map->types[kt].map[i].level;
-          break;
-      }
+  auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
+  QString qstr;
+  if (keysym.has_value) {
+    char result_string[10];
+    int result_string_len = xkb_keysym_to_utf8(keysym.value(), result_string, 10);
+    QString::formUtf8(result_string, result_string_len)
+  } else {
   }
-  auto keysym =XkbDesc->map->syms[effective_group * width + shift_level +
-      (int)XkbDesc->map->key_sym_map[X11CurrentDeviceEvent->detail].offset];
-
-  auto XkbComposeFeedResult = xkb_compose_state_feed(XkbComposeState, keysym);
-  auto compose_status =xkb_compose_state_get_status(XkbComposeState);
-  std::cout << "cmp status: " <<compose_status<<std::endl;
-  char result_string[10];
-
-
-  int result_string_len = 0;
-  xkb_compose_state_get_utf8(XkbComposeState, result_string, 20);
-  if(compose_status == 2 && XkbComposeFeedResult == XKB_COMPOSE_FEED_ACCEPTED) {
-    keysym = xkb_compose_state_get_one_sym(XkbComposeState);
-  }
-  result_string_len = xkb_keysym_to_utf8(keysym, result_string, 10);
-  result_string[result_string_len] = '\0';
   return 0;
 }
 

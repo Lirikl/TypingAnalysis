@@ -54,6 +54,7 @@ HEADERS += \
   Keyboard/KeyPosition.h \
   Keyboard/KeyboardHandler.h \
   Keyboard/KeyboardListener.h \
+  Keyboard/Linux/KeysymMaker.h \
   Keyboard/ListenerExceptionHandler.h \
   Keyboard/RawKeyEvent.h \
   Library/AnyObject/AnyMovable.h \
@@ -86,6 +87,7 @@ SOURCES += \
   Keyboard/KeyID.cpp \
   Keyboard/KeyboardHandler.cpp \
   Keyboard/KeyboardListener.cpp \
+  Keyboard/Linux/KeysymMaker.cpp \
   Keyboard/ListenerExceptionHandler.cpp \
   Keyboard/RawKeyEvent.cpp \
   Qt/MainWindow.cpp \

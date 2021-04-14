@@ -47,13 +47,12 @@ private:
   Display *X11Display_;
   XkbDescPtr XkbDesc;
   int xi_opcode_;
-  struct xkb_context* XkbContext;
-  struct xkb_compose_table* XkbComposeTable;
-  struct xkb_compose_state* XkbComposeState;
+  CKeysymMaker KeysymMaker_;
 
-  int extractEventInfo(XGenericEventCookie *);
-  int keyPressEvent(XGenericEventCookie *);
-  int keyReleaseEvent(XGenericEventCookie *);
+
+  int extractEventInfo(XGenericEventCookie*);
+  int keyPressEvent(XGenericEventCookie*);
+  int keyReleaseEvent(XGenericEventCookie*);
 
   // Implementation details
 };
