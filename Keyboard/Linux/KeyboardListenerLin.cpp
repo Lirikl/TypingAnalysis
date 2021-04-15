@@ -1,6 +1,7 @@
 #include "KeyboardListenerLin.h"
 
 #include "Keyboard/KeyboardHandler.h"
+#include "TimerAccess.h"
 
 namespace NSApplication {
 namespace NSKeyboard {
@@ -84,9 +85,12 @@ int CKeyboardListenerLinImpl::extractEventInfo(XGenericEventCookie *X11CurrentEv
 }
 
 int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEventCookie) {
-  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data); 
+  CKeyPressing key_press;
+  CTimerAccess Timer;
+  auto Time = Timer->get()
+  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
-  Time cur_time = X11CurrentDeviceEvent->time;
+  //Time cur_time = X11CurrentDeviceEvent->time;
   QString qstr;
   if (keysym.has_value()) {
     char result_string[10];
@@ -97,9 +101,13 @@ int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEvent
 }
 
 int CKeyboardListenerLinImpl::keyReleaseEvent(XGenericEventCookie *X11CurrentEventCookie) {
-  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
-  Time cur_time = X11CurrentDeviceEvent->time;
-
+  CKeyReleasing key_release;
+  CTimerAccess Timer;
+  auto Time = Timer->get();
+  XIDeviceEvent* X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+  key_release.Time =  Time;
+  key_release.KeyPosition;
+  key_release.KeyID;
 }
 // TO DO
 // a specific ctor of CKiller
