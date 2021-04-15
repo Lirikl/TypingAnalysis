@@ -88,7 +88,7 @@ int CKeyboardListenerLinImpl::extractEventInfo(XGenericEventCookie *X11CurrentEv
 int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEventCookie) {
   CKeyPressing key_press;
   CTimerAccess Timer;
-  auto Time = Timer->get()
+  auto Time = Timer->get();
   auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
   //Time cur_time = X11CurrentDeviceEvent->time;
@@ -98,6 +98,7 @@ int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEvent
     int result_string_len = xkb_keysym_to_utf8(keysym.value(), result_string, 10);
     QString::fromUtf8(result_string, result_string_len);
   }
+  KeyPressing({Time, 0, 0, 0, qstr});
   return 0;
 }
 
@@ -109,6 +110,8 @@ int CKeyboardListenerLinImpl::keyReleaseEvent(XGenericEventCookie *X11CurrentEve
   key_release.Time =  Time;
   key_release.KeyPosition;
   key_release.KeyID;
+  KeyReleasing({Time, 0, 0});
+  return 0;
 }
 // TO DO
 // a specific ctor of CKiller

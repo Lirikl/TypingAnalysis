@@ -29,7 +29,6 @@ private:
   struct xkb_context* XkbContext;
   struct xkb_compose_table* XkbComposeTable;
   struct xkb_compose_state* XkbComposeState;
-  XIDeviceEvent* DeviceEvent;
   XkbDescPtr XkbDesc;
 };
 
