@@ -8,6 +8,7 @@
 #include <future>
 #include <QObject>
 #include <QThread>
+#include "Time.h"
 #include <locale.h>
 #include <xkbcommon/xkbcommon.h>
 #include <xkbcommon/xkbcommon-compose.h>
