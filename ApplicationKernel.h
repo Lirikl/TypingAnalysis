@@ -4,7 +4,6 @@
 #include "Kernel/SeanceManager.h"
 #include "ApplicationGlobals.h"
 
-
 namespace NSApplication {
 
 class CApplicationKernel : protected CApplicationGlobals {
@@ -15,6 +14,6 @@ protected:
   CSeanceManager SeanceManager_;
 };
 
-} // NSApplication
+} // namespace NSApplication
 
 #endif // NSAPPLICATION_CAPPLICATIONKERNEL_H

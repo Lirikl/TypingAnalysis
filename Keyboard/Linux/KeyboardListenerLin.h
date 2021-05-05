@@ -4,6 +4,7 @@
 #include "Keyboard/AnyKeyboardKiller.h"
 
 
+
 #include <iostream>
 #include <future>
 #include <QObject>
@@ -24,6 +25,7 @@ class CKeyboardListenerLinImpl : public QObject {
   Q_OBJECT
 
   friend class CKiller;
+
 public:
   using CAnyKillerPromise = std::promise<CAnyKeyboardKiller>;
   CKeyboardListenerLinImpl(CAnyKillerPromise, CKeyboardHandler*);
@@ -32,8 +34,10 @@ public:
 signals:
   void KeyPressing(const CKeyPressing&);
   void KeyReleasing(const CKeyReleasing&);
+
 public:
   int exec();
+
 private:
   Display *X11Display_;
   XkbDescPtr XkbDesc;
@@ -48,7 +52,6 @@ private:
   // Implementation details
 };
 
-
 // The object provides a way to shut down the listener
 class CKiller {
 public:
@@ -60,8 +63,8 @@ private:
   // Implementation details
 };
 
-} // NSLinux
-} // NSKeyboard
-} // NSApplication
+} // namespace NSLinux
+} // namespace NSKeyboard
+} // namespace NSApplication
 
 #endif // NSAPPLICATION_NSKEYBOARD_NSLINUX_CKEYBOARDLISTENERLIN_H

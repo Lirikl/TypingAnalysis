@@ -29,7 +29,6 @@ void CKeyboardHandlerDebugOutImpl::subscribeToKeyboardHandler() {
 }
 
 void CKeyboardHandlerDebugOutImpl::outputKeyPressing(
-
     const CKeyboardHandlerDebugOutImpl::CKeyPressing& KeyEvent) {
   QString Text = QString("Press \tKeID = 0x%1\tKeyPos = 0x%2\ttime = %3 "
                          "ms\tsymb = %4\tlbl = %5")

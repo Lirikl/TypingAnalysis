@@ -29,7 +29,15 @@ void CKeyboardHandlerDebugOutImpl::subscribeToKeyboardHandler() {
 }
 
 void CKeyboardHandlerDebugOutImpl::outputKeyPressing(
-
+<<<<<<< HEAD
+  const CKeyboardHandlerDebugOutImpl::CKeyPressing& KeyEvent) {
+  QString Text = QString("Press \tKeID = 0x%1\tKeyPos = 0x%2\ttime = %3 ms\tsymb = %4\tlbl = %5")
+                 .arg(KeyEvent.KeyID, 2, 16, QChar('0'))
+                 .arg(KeyEvent.KeyPosition, 2, 16, QChar('0'))
+                 .arg(KeyEvent.Time.toMilliSecondsF(), 10)
+                 .arg(KeyEvent.KeyText, 2)
+                 .arg(KeyEvent.KeyLabel);
+=======
     const CKeyboardHandlerDebugOutImpl::CKeyPressing& KeyEvent) {
   QString Text = QString("Press \tKeID = 0x%1\tKeyPos = 0x%2\ttime = %3 "
                          "ms\tsymb = %4\tlbl = %5")
@@ -38,15 +46,22 @@ void CKeyboardHandlerDebugOutImpl::outputKeyPressing(
                      .arg(KeyEvent.PressingTime.toMilliSecondsF(), 10)
                      .arg(KeyEvent.KeyText, 2)
                      .arg(KeyEvent.KeyLabel);
+>>>>>>> upstream/keyboard
   ui_->Text()->append(Text);
 }
 
 void CKeyboardHandlerDebugOutImpl::outputKeyReleasing(
     const CKeyboardHandlerDebugOutImpl::CKeyReleasing& KeyEvent) {
   QString Text = QString("Release\tKeID = 0x%1\tKeyPos = 0x%2\ttime = %3 ms")
+<<<<<<< HEAD
+                 .arg(KeyEvent.KeyID, 2, 16, QChar('0'))
+                 .arg(KeyEvent.KeyPosition, 2, 16, QChar('0'))
+                 .arg(KeyEvent.Time.toMilliSecondsF(), 10);
+=======
                      .arg(KeyEvent.KeyID, 2, 16, QChar('0'))
                      .arg(KeyEvent.KeyPosition, 2, 16, QChar('0'))
                      .arg(KeyEvent.ReleasingTime.toMilliSecondsF(), 10);
+>>>>>>> upstream/keyboard
   ui_->Text()->append(Text);
 }
 } // namespace NSKeyboardHandlerOutDetail

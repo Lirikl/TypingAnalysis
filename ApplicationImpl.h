@@ -6,13 +6,11 @@
 #include "ApplicationGUI.h"
 #include "ApplicationKernel.h"
 
-
 namespace NSApplication {
 
-class CApplicationImpl
-  : protected CApplicationKernel, protected CApplicationGUI {
-  using CKeyboardShutter = NSInterface::CKeyboardShutter;
-  using CSessionFlusher = NSInterface::CSessionFlusher;
+
+class CApplicationImpl : protected CApplicationKernel,
+                         protected CApplicationGUI {
 public:
   CApplicationImpl();
 
@@ -21,6 +19,6 @@ private:
   CSessionFlusher SessionFlusher_;
 };
 
-} // NSApplication
+} // namespace NSApplication
 
 #endif // NSAPPLICATION_CAPPLICATIONIMPL_H
