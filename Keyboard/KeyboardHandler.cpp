@@ -1,4 +1,3 @@
-
 #include <QDebug>
 #include "KeyboardHandler.h"
 
@@ -6,6 +5,7 @@
 #include "ListenerExceptionHandler.h"
 
 #include "QtLoopException.h"
+
 
 
 namespace NSApplication {
@@ -55,7 +55,7 @@ void CKeyboardHandler::onKeyPressing(const CKeyPressing& KeyPressing) {
   qDebug() << "KeyID =" << KeyPressing.KeyID
            << "KeyPos =" << KeyPressing.KeyPosition
            << "symb =" << KeyPressing.KeyText << "lbl =" << KeyPressing.KeyLabel
-           << "time =" << KeyPressing.PressingTime.toMilliSecondsF() << "ms";
+           << "time =" << KeyPressing.Time.toMilliSecondsF() << "ms";
   KeyPressingOut_.set(KeyPressing);
 }
 
