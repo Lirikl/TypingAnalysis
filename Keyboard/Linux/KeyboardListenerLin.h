@@ -3,8 +3,13 @@
 
 #include "Keyboard/AnyKeyboardKiller.h"
 
-#include <QObject>
+
+
+#include <iostream>
 #include <future>
+#include <QObject>
+#include <QThread>
+#include "KeysymMaker.h"
 
 namespace NSApplication {
 namespace NSKeyboard {
@@ -34,6 +39,16 @@ public:
   int exec();
 
 private:
+  Display *X11Display_;
+  XkbDescPtr XkbDesc;
+  int xi_opcode_;
+  CKeysymMaker KeysymMaker_;
+
+
+  int extractEventInfo(XGenericEventCookie*);
+  int keyPressEvent(XGenericEventCookie*);
+  int keyReleaseEvent(XGenericEventCookie*);
+
   // Implementation details
 };
 
