@@ -23,14 +23,16 @@ class CKeysymMaker {
 public:
   CKeysymMaker();
   CKeysymMaker(XkbDescPtr);
+  CKeysymMaker& operator = (CKeysymMaker&);
+  CKeysymMaker& operator = (CKeysymMaker&&);
   ~CKeysymMaker();
   std::optional<xkb_keysym_t>feedEvent(XIDeviceEvent*);
-private:
-  struct xkb_context* XkbContext;
-  struct xkb_compose_table* XkbComposeTable;
-  struct xkb_compose_state* XkbComposeState;
-  XIDeviceEvent* DeviceEvent;
-  XkbDescPtr XkbDesc;
+
+//private:
+  struct xkb_context* XkbContext = 0;
+  struct xkb_compose_table* XkbComposeTable = 0;
+  struct xkb_compose_state* XkbComposeState = 0;
+  XkbDescPtr XkbDesc = 0;
 };
 
 } // NSLinux

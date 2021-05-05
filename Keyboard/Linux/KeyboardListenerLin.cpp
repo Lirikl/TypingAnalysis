@@ -1,7 +1,8 @@
+#include<iostream>
+#include "TimerAccess.h"
+#include "Keyboard/KeyboardHandler.h"
 #include "KeyboardListenerLin.h"
 
-#include "Keyboard/KeyboardHandler.h"
-#include "TimerAccess.h"
 
 namespace NSApplication {
 namespace NSKeyboard {
@@ -32,6 +33,11 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XSync(X11Display_, false);
   XkbDesc  = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
   KeysymMaker_ = CKeysymMaker(XkbDesc);
+  //WTF
+  //xkb_compose_state_reset(KeysymMaker_.XkbComposeState);
+  //xkb_compose_state_reset(KeysymMaker_.XkbComposeState);
+  //std::cout<<xkb_compose_state_feed (KeysymMaker_.XkbComposeState, 97)<<std::endl;
+  //std::cout<<"lool"<<std::endl;
   //const char* locale;
   //locale = setlocale(LC_ALL,"");
   //XkbContext =  xkb_context_new(XKB_CONTEXT_NO_FLAGS);
@@ -62,6 +68,7 @@ int CKeyboardListenerLinImpl::exec() {
   // Message loop
   XEvent X11CurrentEvent;
   XGenericEventCookie *X11CurrentEventCookie = &X11CurrentEvent.xcookie;
+
  //while (!myThread_->isInterruptionRequested()) {
   while (1) {
     XNextEvent(X11Display_, &X11CurrentEvent);
@@ -85,6 +92,9 @@ int CKeyboardListenerLinImpl::extractEventInfo(XGenericEventCookie *X11CurrentEv
 }
 
 int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEventCookie) {
+
+  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+  auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
   CKeyPressing key_press;
   CTimerAccess Timer;
   auto Time = Timer->get()
@@ -93,9 +103,10 @@ int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEvent
   //Time cur_time = X11CurrentDeviceEvent->time;
   QString qstr;
   if (keysym.has_value()) {
+    std::cout << "@@" << XKeysymToString(keysym.value()) <<std::endl;
     char result_string[10];
     int result_string_len = xkb_keysym_to_utf8(keysym.value(), result_string, 10);
-    QString::fromUtf8(result_string, result_string_len);
+    qstr = QString::fromUtf8(result_string, result_string_len - 1);
   }
   return 0;
 }
