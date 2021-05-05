@@ -2,20 +2,13 @@
 #define NSAPPLICATION_NSKEYBOARD_NSLINUX_CKEYBOARDLISTENERLIN_H
 
 #include "Keyboard/AnyKeyboardKiller.h"
-#include "KeysymMaker.h"
+
 
 #include <iostream>
 #include <future>
 #include <QObject>
 #include <QThread>
-#include "Time.h"
-#include <locale.h>
-#include <xkbcommon/xkbcommon.h>
-#include <xkbcommon/xkbcommon-compose.h>
-#include <X11/XKBlib.h>
-#include <X11/extensions/XInput2.h>
-#include <X11/keysym.h>
-#include <X11/Xlib.h>
+#include "KeysymMaker.h"
 
 namespace NSApplication {
 namespace NSKeyboard {
