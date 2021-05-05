@@ -1,10 +1,11 @@
+
+#include <QDebug>
 #include "KeyboardHandler.h"
 
 #include "KeyboardListener.h"
 #include "ListenerExceptionHandler.h"
 #include "QtLoopException.h"
 
-#include <QDebug>
 
 namespace NSApplication {
 namespace NSKeyboard {
