@@ -15,8 +15,8 @@ public:
   CApplicationImpl();
 
 private:
-  CKeyboardShutter KeyboardShutter_;
-  CSessionFlusher SessionFlusher_;
+  //CKeyboardShutter KeyboardShutter_;
+  //CSessionFlusher SessionFlusher_;
 };
 
 } // namespace NSApplication
