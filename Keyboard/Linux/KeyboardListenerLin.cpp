@@ -105,6 +105,7 @@ int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEvent
     int result_string_len = xkb_keysym_to_utf8(keysym.value(), result_string, 10);
     qstr = QString::fromUtf8(result_string, result_string_len - 1);
   }
+  KeyPressing({Time, 0, 0, 0, qstr});
   return 0;
 }
 
@@ -116,6 +117,8 @@ int CKeyboardListenerLinImpl::keyReleaseEvent(XGenericEventCookie *X11CurrentEve
   key_release.Time =  Time;
   key_release.KeyPosition;
   key_release.KeyID;
+  KeyReleasing({Time, 0, 0});
+  return 0;
 }
 // TO DO
 // a specific ctor of CKiller
