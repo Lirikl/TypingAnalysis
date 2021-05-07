@@ -54,8 +54,6 @@ HEADERS += \
   Keyboard/KeyPosition.h \
   Keyboard/KeyboardHandler.h \
   Keyboard/KeyboardListener.h \
-  Keyboard/Linux/KeysymMaker.h \
-  Keyboard/Linux/x11includes.h \
   Keyboard/ListenerExceptionHandler.h \
   Keyboard/RawKeyEvent.h \
   Library/AnyObject/AnyMovable.h \
@@ -88,7 +86,6 @@ SOURCES += \
   Keyboard/KeyID.cpp \
   Keyboard/KeyboardHandler.cpp \
   Keyboard/KeyboardListener.cpp \
-  Keyboard/Linux/KeysymMaker.cpp \
   Keyboard/ListenerExceptionHandler.cpp \
   Keyboard/RawKeyEvent.cpp \
   Qt/MainWindow.cpp \
@@ -143,11 +140,13 @@ macx {
 
 linux {
     HEADERS += \
-    Keyboard/Linux/KeyboardListenerLin.h \
-    Keyboard/Linux/x11includes.h
+    Keyboard/Linux/KeyboardListenerLin.h \    
+    Keyboard/Linux/KeysymMaker.h \
+    Keyboard/Linux/x11includes.h\
 
     SOURCES += \
-    Keyboard/Linux/KeyboardListenerLin.cpp \
+    Keyboard/Linux/KeyboardListenerLin.cpp \    
+    Keyboard/Linux/KeysymMaker.cpp
 
     LIBS += -lX11 \
             -lXi \
