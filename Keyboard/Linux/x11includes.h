@@ -1,0 +1,20 @@
+#ifndef X11INCLUDES_H
+#define X11INCLUDES_H
+#include <xkbcommon/xkbcommon.h>
+#include <xkbcommon/xkbcommon-compose.h>
+#include <X11/XKBlib.h>
+#include <X11/extensions/XInput2.h>
+#include <X11/keysym.h>
+#include <X11/Xlib.h>
+#undef Bool
+#undef CursorShape
+#undef Expose
+#undef KeyPress
+#undef KeyRelease
+#undef FocusIn
+#undef FocusOut
+#undef FontChange
+#undef None
+#undef Status
+#undef Unsorted
+#endif // X11INCLUDES_H

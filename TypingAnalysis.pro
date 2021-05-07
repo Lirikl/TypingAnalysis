@@ -55,6 +55,7 @@ HEADERS += \
   Keyboard/KeyboardHandler.h \
   Keyboard/KeyboardListener.h \
   Keyboard/Linux/KeysymMaker.h \
+  Keyboard/Linux/x11includes.h \
   Keyboard/ListenerExceptionHandler.h \
   Keyboard/RawKeyEvent.h \
   Library/AnyObject/AnyMovable.h \
@@ -142,10 +143,11 @@ macx {
 
 linux {
     HEADERS += \
-    Keyboard/Linux/KeyboardListenerLin.h
+    Keyboard/Linux/KeyboardListenerLin.h \
+    Keyboard/Linux/x11includes.h
 
     SOURCES += \
-    Keyboard/Linux/KeyboardListenerLin.cpp
+    Keyboard/Linux/KeyboardListenerLin.cpp \
 
     LIBS += -lX11 \
             -lXi \
