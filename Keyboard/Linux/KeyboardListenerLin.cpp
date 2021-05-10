@@ -33,17 +33,6 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XSync(X11Display_, false);
   XkbDesc  = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
   KeysymMaker_ = CKeysymMaker(XkbDesc);
-  //WTF
-  //xkb_compose_state_reset(KeysymMaker_.XkbComposeState);
-  //xkb_compose_state_reset(KeysymMaker_.XkbComposeState);
-  //std::cout<<xkb_compose_state_feed (KeysymMaker_.XkbComposeState, 97)<<std::endl;
-  //std::cout<<"lool"<<std::endl;
-  //const char* locale;
-  //locale = setlocale(LC_ALL,"");
-  //XkbContext =  xkb_context_new(XKB_CONTEXT_NO_FLAGS);
-  //XkbComposeTable = xkb_compose_table_new_from_locale(XkbContext, locale, XKB_COMPOSE_COMPILE_NO_FLAGS);
-  //XkbComposeState = xkb_compose_state_new(XkbComposeTable, XKB_COMPOSE_STATE_NO_FLAGS);
-
   // TO DO
   // Set killerPromise to a non-trivial one
   killerPromise.set_value(CKiller());
@@ -92,32 +81,30 @@ int CKeyboardListenerLinImpl::extractEventInfo(XGenericEventCookie *X11CurrentEv
 }
 
 int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEventCookie) {
-  CKeyPressing key_press;
+  CKeyPressing key_press = {};
   CTimerAccess Timer;
-  auto Time = Timer->get();
+  key_press.Time = Timer->get();
   auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
-  //Time cur_time = X11CurrentDeviceEvent->time;
-  QString qstr;
   if (keysym.has_value()) {
-    std::cout << "@@" << XKeysymToString(keysym.value()) <<std::endl;
     char result_string[10];
     int result_string_len = xkb_keysym_to_utf8(keysym.value(), result_string, 10);
-    qstr = QString::fromUtf8(result_string, result_string_len - 1);
+    std::cout <<"SYMBOL !!!!"<< XKeysymToString(keysym.value())<<std::endl;
+
+    key_press.KeyText = QString::fromUtf8(result_string, result_string_len - 1);
   }
-  KeyPressing({Time, 0, 0, 0, qstr});
+  key_press.KeyPosition = X11CurrentDeviceEvent->detail;
+  KeyPressing(key_press);
   return 0;
 }
 
 int CKeyboardListenerLinImpl::keyReleaseEvent(XGenericEventCookie *X11CurrentEventCookie) {
-  CKeyReleasing key_release;
+  CKeyReleasing key_release = {};
   CTimerAccess Timer;
-  auto Time = Timer->get();
   XIDeviceEvent* X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
-  key_release.Time =  Time;
-  key_release.KeyPosition;
-  key_release.KeyID;
-  KeyReleasing({Time, 0, 0});
+  key_release.Time = Timer->get();
+  key_release.KeyPosition = X11CurrentDeviceEvent->detail;
+  KeyReleasing(key_release);
   return 0;
 }
 // TO DO
