@@ -65,19 +65,19 @@ namespace NSLinux {
         (int)XkbDesc->map->key_sym_map[DeviceEvent->detail].offset];
     return keysym;
   }
-  std::optional<xkb_keysym_t> CKeysymMaker::feedEvent(XIDeviceEvent* DeviceEvent) {
+  xkb_keysym_t CKeysymMaker::feedEvent(XIDeviceEvent* DeviceEvent) {
     auto keysym = simpleKeysym(DeviceEvent);
     auto XkbComposeFeedResult = xkb_compose_state_feed(XkbComposeState, keysym);
     auto compose_status = xkb_compose_state_get_status(XkbComposeState);
     if (XkbComposeFeedResult == XKB_COMPOSE_FEED_ACCEPTED) {
       if (compose_status == XKB_COMPOSE_COMPOSING || compose_status == XKB_COMPOSE_CANCELLED) {
-        return std::optional<xkb_keysym_t>();
+        return keysym;
       }
       if(compose_status == XKB_COMPOSE_COMPOSED) {
         return xkb_compose_state_get_one_sym(XkbComposeState);
       }
     }
-    return std::optional<xkb_keysym_t>(keysym);
+    return keysym;
   }
 }
 }

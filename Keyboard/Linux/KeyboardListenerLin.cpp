@@ -86,13 +86,10 @@ int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEvent
   key_press.Time = Timer->get();
   auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
-  if (keysym.has_value()) {
-    char result_string[10];
-    int result_string_len = xkb_keysym_to_utf8(keysym.value(), result_string, 10);
-    std::cout <<"SYMBOL !!!!"<< XKeysymToString(keysym.value())<<std::endl;
-
-    key_press.KeyText = QString::fromUtf8(result_string, result_string_len - 1);
-  }
+  char result_string[10];
+  int result_string_len = xkb_keysym_to_utf8(keysym, result_string, 10);
+  std::cout <<"SYMBOL !!!!"<< XKeysymToString(keysym)<<std::endl;
+  key_press.KeyText = QString::fromUtf8(result_string, result_string_len - 1);
   key_press.KeyPosition = X11CurrentDeviceEvent->detail;
   KeyPressing(key_press);
   return 0;
