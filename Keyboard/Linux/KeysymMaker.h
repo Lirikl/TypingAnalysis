@@ -22,6 +22,7 @@ public:
   CKeysymMaker& operator = (CKeysymMaker&&);
   ~CKeysymMaker();
   std::optional<xkb_keysym_t>feedEvent(XIDeviceEvent*);
+  xkb_keysym_t simpleKeysym(XIDeviceEvent*);
 
 //private:
   struct xkb_context* XkbContext = 0;

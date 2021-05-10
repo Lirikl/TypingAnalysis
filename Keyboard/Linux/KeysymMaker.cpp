@@ -46,7 +46,7 @@ namespace NSLinux {
     xkb_compose_state_unref(XkbComposeState);
   }
 
-  std::optional<xkb_keysym_t> CKeysymMaker::feedEvent(XIDeviceEvent* DeviceEvent) {
+  xkb_keysym_t CKeysymMaker::simpleKeysym(XIDeviceEvent *DeviceEvent) {
     int effective_group = DeviceEvent->group.effective;
     if (effective_group >= (int)XkbDesc->map->key_sym_map[DeviceEvent->detail].group_info)
             effective_group = (int)XkbDesc->map->key_sym_map[DeviceEvent->detail].group_info - 1;
@@ -63,8 +63,10 @@ namespace NSLinux {
     }
     auto keysym =XkbDesc->map->syms[effective_group * width + shift_level +
         (int)XkbDesc->map->key_sym_map[DeviceEvent->detail].offset];
-
-
+    return keysym;
+  }
+  std::optional<xkb_keysym_t> CKeysymMaker::feedEvent(XIDeviceEvent* DeviceEvent) {
+    auto keysym = simpleKeysym(DeviceEvent);
     auto XkbComposeFeedResult = xkb_compose_state_feed(XkbComposeState, keysym);
     auto compose_status = xkb_compose_state_get_status(XkbComposeState);
     if (XkbComposeFeedResult == XKB_COMPOSE_FEED_ACCEPTED) {
