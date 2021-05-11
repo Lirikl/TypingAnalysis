@@ -33,6 +33,10 @@ win32 {
 }
 
 linux {
+  LIBS += -lX11 \
+        -lXi \
+        -lxcb \
+        -lxkbcommon
   linux-g++*{
   }
 
@@ -148,10 +152,6 @@ linux {
     Keyboard/Linux/KeyboardListenerLin.cpp \    
     Keyboard/Linux/KeysymMaker.cpp
 
-    LIBS += -lX11 \
-            -lXi \
-            -lxcb \
-            -lxkbcommon
 }
 
 contains(DEFINES, KEYBOARD_HANDLER_DEBUG) {
