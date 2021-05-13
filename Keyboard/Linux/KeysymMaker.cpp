@@ -11,9 +11,9 @@ CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc) {
   XkbDesc_ = XkbDesc;
 
   const char* locale;
-  locale = setlocale(LC_ALL,
-                     "ru_RU.UTF-8"); // for debug because it makes broken locale
-  // locale = setlocale(LC_ALL, ""); //for release
+  // locale = std::setlocale(LC_ALL,
+  //                   "ru_RU.UTF-8"); // for debug because it makes broken
+  locale = std::setlocale(LC_ALL, ""); // for release
   XkbContext_ = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
   XkbComposeTable_ = xkb_compose_table_new_from_locale(
       XkbContext_, locale, XKB_COMPOSE_COMPILE_NO_FLAGS);

@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QString>
 #include <QThread>
-#include <locale.h>
+#include <clocale>
 #include <optional>
 
 namespace NSApplication {
