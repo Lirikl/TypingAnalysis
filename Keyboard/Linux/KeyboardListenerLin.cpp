@@ -1,8 +1,7 @@
-#include<iostream>
-#include "TimerAccess.h"
-#include "Keyboard/KeyboardHandler.h"
 #include "KeyboardListenerLin.h"
-
+#include "Keyboard/KeyboardHandler.h"
+#include "TimerAccess.h"
+#include <iostream>
 
 namespace NSApplication {
 namespace NSKeyboard {
@@ -13,12 +12,13 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   // Set the Listener
   X11Display_ = XOpenDisplay(nullptr);
   if (X11Display_ == nullptr) {
-      throw std::runtime_error("Cannot open display");
+    throw std::runtime_error("Cannot open display");
   }
   int queryEvent, queryError;
-  if (! XQueryExtension(X11Display_, "XInputExtension", &xi_opcode_, &queryEvent, &queryError)) {
-      // need to chage way of using exeptions
-      throw std::runtime_error("X Input extension not available\n");
+  if (!XQueryExtension(X11Display_, "XInputExtension", &xi_opcode_, &queryEvent,
+                       &queryError)) {
+    // need to chage way of using exeptions
+    throw std::runtime_error("X Input extension not available\n");
   }
   Window X11DefaultWindow = DefaultRootWindow(X11Display_);
   XIEventMask X11EventMask_;
@@ -27,11 +27,12 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   std::vector<unsigned char> safeArray(X11EventMask_.mask_len);
   X11EventMask_.mask = safeArray.data();
   std::fill(X11EventMask_.mask, X11EventMask_.mask + X11EventMask_.mask_len, 0);
-  XISetMask(X11EventMask_.mask, XI_KeyPress); // maybe it should me moved from constructor into Do?
+  XISetMask(X11EventMask_.mask,
+            XI_KeyPress); // maybe it should me moved from constructor into Do?
   XISetMask(X11EventMask_.mask, XI_KeyRelease);
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
   XSync(X11Display_, false);
-  XkbDesc  = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
+  XkbDesc = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
   KeysymMaker_ = CKeysymMaker(XkbDesc);
   // TO DO
   // Set killerPromise to a non-trivial one
@@ -56,13 +57,13 @@ int CKeyboardListenerLinImpl::exec() {
   // TO DO
   // Message loop
   XEvent X11CurrentEvent;
-  XGenericEventCookie *X11CurrentEventCookie = &X11CurrentEvent.xcookie;
+  XGenericEventCookie* X11CurrentEventCookie = &X11CurrentEvent.xcookie;
 
- //while (!myThread_->isInterruptionRequested()) {
+  // while (!myThread_->isInterruptionRequested()) {
   while (1) {
     XNextEvent(X11Display_, &X11CurrentEvent);
-    if (!XGetEventData(X11Display_, X11CurrentEventCookie)
-      || X11CurrentEventCookie->extension != xi_opcode_) {
+    if (!XGetEventData(X11Display_, X11CurrentEventCookie) ||
+        X11CurrentEventCookie->extension != xi_opcode_) {
       continue;
     }
     if (X11CurrentEventCookie->evtype == XI_KeyPress) {
@@ -72,36 +73,40 @@ int CKeyboardListenerLinImpl::exec() {
       keyReleaseEvent(X11CurrentEventCookie);
     }
     XFreeEventData(X11Display_, X11CurrentEventCookie);
-    }
+  }
   return 0;
 }
 
-int CKeyboardListenerLinImpl::extractEventInfo(XGenericEventCookie *X11CurrentEventCookie) {
-   return 0;
+int CKeyboardListenerLinImpl::extractEventInfo(
+    XGenericEventCookie* X11CurrentEventCookie) {
+  return 0;
 }
 
-int CKeyboardListenerLinImpl::keyPressEvent(XGenericEventCookie *X11CurrentEventCookie) {
+int CKeyboardListenerLinImpl::keyPressEvent(
+    XGenericEventCookie* X11CurrentEventCookie) {
   CKeyPressing key_press = {};
   CTimerAccess Timer;
   key_press.Time = Timer->get();
-  auto X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+  auto X11CurrentDeviceEvent =
+      static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
 
   char result_string[10];
   int result_string_len = xkb_keysym_to_utf8(keysym, result_string, 10);
   key_press.KeyText = QString::fromUtf8(result_string, result_string_len - 1);
 
-
-  std::cout <<"SYMBOL !!!!"<< XKeysymToString(keysym)<<std::endl;
+  std::cout << "SYMBOL !!!!" << XKeysymToString(keysym) << std::endl;
   key_press.KeyPosition = X11CurrentDeviceEvent->detail;
   KeyPressing(key_press);
   return 0;
 }
 
-int CKeyboardListenerLinImpl::keyReleaseEvent(XGenericEventCookie *X11CurrentEventCookie) {
+int CKeyboardListenerLinImpl::keyReleaseEvent(
+    XGenericEventCookie* X11CurrentEventCookie) {
   CKeyReleasing key_release = {};
   CTimerAccess Timer;
-  XIDeviceEvent* X11CurrentDeviceEvent = static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+  XIDeviceEvent* X11CurrentDeviceEvent =
+      static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
   key_release.Time = Timer->get();
   key_release.KeyPosition = X11CurrentDeviceEvent->detail;
   KeyReleasing(key_release);
