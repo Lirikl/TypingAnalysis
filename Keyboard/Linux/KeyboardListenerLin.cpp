@@ -32,8 +32,8 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XISetMask(X11EventMask_.mask, XI_KeyRelease);
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
   XSync(X11Display_, false);
-  XkbDesc = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
-  KeysymMaker_ = CKeysymMaker(XkbDesc);
+  XkbDesc_ = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
+  KeysymMaker_ = CKeysymMaker(XkbDesc_);
   // TO DO
   // Set killerPromise to a non-trivial one
   killerPromise.set_value(CKiller());
@@ -49,7 +49,7 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
 CKeyboardListenerLinImpl::~CKeyboardListenerLinImpl() {
   disconnect(this, &CKeyboardListenerLinImpl::KeyPressing, nullptr, nullptr);
   disconnect(this, &CKeyboardListenerLinImpl::KeyReleasing, nullptr, nullptr);
-  XkbFreeKeyboard(XkbDesc, XkbAllComponentsMask, 1);
+  XkbFreeKeyboard(XkbDesc_, XkbAllComponentsMask, 1);
   XCloseDisplay(X11Display_);
 }
 

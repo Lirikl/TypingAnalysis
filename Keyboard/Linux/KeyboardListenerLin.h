@@ -38,7 +38,7 @@ public:
 
 private:
   Display* X11Display_;
-  XkbDescPtr XkbDesc;
+  XkbDescPtr XkbDesc_;
   int xi_opcode_;
   CKeysymMaker KeysymMaker_;
 
