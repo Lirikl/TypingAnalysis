@@ -45,7 +45,7 @@ private:
   int extractEventInfo(XGenericEventCookie*);
   int keyPressEvent(XGenericEventCookie*);
   int keyReleaseEvent(XGenericEventCookie*);
-
+  XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*);
   // Implementation details
 };
 

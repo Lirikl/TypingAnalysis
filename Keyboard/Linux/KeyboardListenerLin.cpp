@@ -87,14 +87,12 @@ int CKeyboardListenerLinImpl::keyPressEvent(
   CKeyPressing key_press = {};
   CTimerAccess Timer;
   key_press.Time = Timer->get();
-  auto X11CurrentDeviceEvent =
-      static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+  XIDeviceEvent* X11CurrentDeviceEvent =
+      getXIDeviceEvent(X11CurrentEventCookie);
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
-
   char result_string[10];
   int result_string_len = xkb_keysym_to_utf8(keysym, result_string, 10);
   key_press.KeyText = QString::fromUtf8(result_string, result_string_len - 1);
-
   std::cout << "SYMBOL !!!!" << XKeysymToString(keysym) << std::endl;
   key_press.KeyPosition = X11CurrentDeviceEvent->detail;
   KeyPressing(key_press);
@@ -106,11 +104,16 @@ int CKeyboardListenerLinImpl::keyReleaseEvent(
   CKeyReleasing key_release = {};
   CTimerAccess Timer;
   XIDeviceEvent* X11CurrentDeviceEvent =
-      static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+      getXIDeviceEvent(X11CurrentEventCookie);
   key_release.Time = Timer->get();
   key_release.KeyPosition = X11CurrentDeviceEvent->detail;
   KeyReleasing(key_release);
   return 0;
+}
+
+XIDeviceEvent* CKeyboardListenerLinImpl::getXIDeviceEvent(
+    XGenericEventCookie* X11CurrentEventCookie) {
+  return static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
 }
 // TO DO
 // a specific ctor of CKiller
