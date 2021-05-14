@@ -8,6 +8,7 @@
 #include <QThread>
 #include <future>
 #include <iostream>
+#include <memory>
 #include <string>
 
 namespace NSApplication {
@@ -41,6 +42,7 @@ private:
   Display* X11Display_;
   XkbDescPtr XkbDesc_;
   int xi_opcode_;
+  std::shared_ptr<int> killer_flag_;
   CKeysymMaker KeysymMaker_;
 
   int extractEventInfo(XGenericEventCookie*);
@@ -55,8 +57,10 @@ private:
 
 // The object provides a way to shut down the listener
 class CKiller {
+  std::weak_ptr<int> killer_flag_;
+
 public:
-  CKiller() = default;
+  CKiller(std::shared_ptr<int>);
   // CKiller(...)
   void stopListener() const;
 

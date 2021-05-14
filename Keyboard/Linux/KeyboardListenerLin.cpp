@@ -8,7 +8,8 @@ namespace NSKeyboard {
 namespace NSLinux {
 
 CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
-    CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler) {
+    CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler)
+    : killer_flag_(0) {
   // Set the Listener
   X11Display_ = XOpenDisplay(nullptr);
   if (X11Display_ == nullptr) {
@@ -36,7 +37,7 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   KeysymMaker_ = CKeysymMaker(XkbDesc_);
   // TO DO
   // Set killerPromise to a non-trivial one
-  killerPromise.set_value(CKiller());
+  killerPromise.set_value(CKiller(killer_flag_));
 
   connect(this, &CKeyboardListenerLinImpl::KeyPressing, KeyboardHandler,
           &CKeyboardHandler::onKeyPressing,
@@ -60,7 +61,7 @@ int CKeyboardListenerLinImpl::exec() {
   XGenericEventCookie* X11CurrentEventCookie = &X11CurrentEvent.xcookie;
 
   // while (!myThread_->isInterruptionRequested()) {
-  while (1) {
+  while (!*killer_flag_) {
     XNextEvent(X11Display_, &X11CurrentEvent);
     if (!XGetEventData(X11Display_, X11CurrentEventCookie) ||
         X11CurrentEventCookie->extension != xi_opcode_) {
@@ -160,11 +161,15 @@ QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
 // CKiller::CKiller(...) {
 //
 //}
+CKiller::CKiller(std::shared_ptr<int> spt) : killer_flag_(spt) {
+}
 
 void CKiller::stopListener() const {
-  // TO DO
-  // Implementation details
-  // Send message to CKeyboardListenerLinImpl to stop listening
+  if (auto spt = killer_flag_.lock()) {
+    *spt = 1;
+  }
+  // the only one modification of CKeyListenerLin.killer_flag_, so should be no
+  // race condition
 }
 
 } // namespace NSLinux
