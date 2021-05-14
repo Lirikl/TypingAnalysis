@@ -20,10 +20,9 @@ public:
   CKeysymMaker& operator=(CKeysymMaker&);
   CKeysymMaker& operator=(CKeysymMaker&&);
   ~CKeysymMaker();
+  xkb_keycode_t getKeycode(XIDeviceEvent*);
   xkb_keysym_t feedEvent(XIDeviceEvent*);
   xkb_keysym_t getPlainKeysym(XIDeviceEvent*);
-
-
   // private:
   xkb_context* XkbContext_ = 0;
   xkb_compose_table* XkbComposeTable_ = 0;
