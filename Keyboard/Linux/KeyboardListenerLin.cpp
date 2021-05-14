@@ -7,26 +7,28 @@ namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
 
-A::A() : X11Display_(XOpenDisplay(nullptr)) {
+CKeyboardListenerImplDisplay::CKeyboardListenerImplDisplay() : X11Display_(XOpenDisplay(nullptr)) {
 }
 
-A::~A() {
+CKeyboardListenerImplDisplay::~CKeyboardListenerImplDisplay() {
   XCloseDisplay(X11Display_);
 }
 
-B::B()
+CKeyboardListenerImplDesc::CKeyboardListenerImplDesc()
     : XkbDesc_(
           XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd)) {
 }
 
-B::~B() {
+CKeyboardListenerImplDesc::~CKeyboardListenerImplDesc() {
   XkbFreeKeyboard(XkbDesc_, XkbAllComponentsMask, 1);
 }
 CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
     CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler)
-    : killer_flag_(std::make_shared<int>(0)) {
+    : KeysymMaker_(CKeysymMaker(XkbDesc_)),
+      killer_flag_(std::make_shared<int>(0)) {
   // Set the Listener
-  X11Display_ = XOpenDisplay(nullptr);  Window X11DefaultWindow = DefaultRootWindow(X11Display_);
+
+  Window X11DefaultWindow = DefaultRootWindow(X11Display_);
   XIEventMask X11EventMask_;
   X11EventMask_.deviceid = XIAllDevices;
   X11EventMask_.mask_len = XIMaskLen(XI_LASTEVENT);
@@ -38,9 +40,7 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XISetMask(X11EventMask_.mask, XI_KeyRelease);
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
   XSync(X11Display_, false);
-  XkbDesc_=
-      XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
-  KeysymMaker_ = CKeysymMaker(XkbDesc_);
+  //KeysymMaker_ = CKeysymMaker(XkbDesc_);
   // TO DO
   // Set killerPromise to a non-trivial one
   killerPromise.set_value(CKiller(killer_flag_));
@@ -69,8 +69,7 @@ int CKeyboardListenerLinImpl::exec() {
   // havent found any way to send message
   while (isInteruptionRequested()) {
     XNextEvent(X11Display_, &X11CurrentEvent);
-    if (!XGetEventData(X11Display_, X11CurrentEventCookie) ||
-        X11CurrentEventCookie->extension != xi_opcode_) {
+    if (!XGetEventData(X11Display_, X11CurrentEventCookie)) {
       continue;
     }
     if (X11CurrentEventCookie->evtype == XI_KeyPress) {
