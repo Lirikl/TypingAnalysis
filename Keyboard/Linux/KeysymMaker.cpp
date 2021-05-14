@@ -65,24 +65,27 @@ xkb_keycode_t CKeysymMaker::getKeycode(XIDeviceEvent* DeviceEvent) {
 
 int CKeysymMaker::getGroup(XIDeviceEvent* DeviceEvent) {
   xkb_keycode_t keycode = getKeycode(DeviceEvent);
-  int effective_group = DeviceEvent->group.effective;
-  if (effective_group >= (int)XkbDesc_->map->key_sym_map[keycode].group_info)
-    effective_group = (int)XkbDesc_->map->key_sym_map[keycode].group_info - 1;
-  return effective_group;
+  int group_effective = DeviceEvent->group.effective;
+  if (group_effective >= (int)XkbDesc_->map->key_sym_map[keycode].group_info)
+    group_effective = (int)XkbDesc_->map->key_sym_map[keycode].group_info - 1;
+  return group_effective;
 }
 
 int CKeysymMaker::getWidth(xkb_keycode_t keycode) {
   return XkbDesc_->map->key_sym_map[keycode].width;
 }
 
+int CKeysymMaker::getKt(xkb_keycode_t keycode, int group_effective) {
+  return XkbDesc_->map->key_sym_map[keycode].kt_index[group_effective];
+}
+
 xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) {
   xkb_keycode_t keycode = getKeycode(DeviceEvent);
-  int effective_group = getGroup(DeviceEvent);
+  int group_effective = getGroup(DeviceEvent);
   int width = getWidth(keycode);
-  //int width =  XkbDesc_->map->key_sym_map[keycode].width;
-  int effective_mods = DeviceEvent->mods.effective;
-  int kt = (int)XkbDesc_->map->key_sym_map[keycode].kt_index[effective_group];
+  int kt = getKt(keycode, group_effective);
   int shift_level = 0;
+  int effective_mods = DeviceEvent->mods.effective;
   effective_mods = effective_mods & XkbDesc_->map->types[kt].mods.mask;
   for (int i = 0; i < XkbDesc_->map->types[kt].map_count; i++) {
     if (XkbDesc_->map->types[kt].map[i].mods.mask == effective_mods) {
@@ -91,7 +94,7 @@ xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) {
     }
   }
   auto keysym =
-      XkbDesc_->map->syms[effective_group * width + shift_level +
+      XkbDesc_->map->syms[group_effective * width + shift_level +
                           (int)XkbDesc_->map->key_sym_map[keycode].offset];
   return keysym;
 }
