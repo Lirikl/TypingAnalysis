@@ -34,11 +34,7 @@ public:
 
 class CKeysymMaker: public CKeysymMakerState {
 public:
-  CKeysymMaker();
   CKeysymMaker(XkbDescPtr);
-  CKeysymMaker(CKeysymMaker&);
-  CKeysymMaker& operator=(CKeysymMaker&);
-  CKeysymMaker& operator=(CKeysymMaker&&);
   xkb_keysym_t feedEvent(XIDeviceEvent*);
   void resetState();
   xkb_keycode_t getKeycode(XIDeviceEvent*);

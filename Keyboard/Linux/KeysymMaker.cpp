@@ -29,42 +29,9 @@ CKeysymMakerState::~CKeysymMakerState() {
   xkb_compose_state_unref(XkbComposeState_);
 }
 
-CKeysymMaker::CKeysymMaker() {
-}
 CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc) : XkbDesc_(XkbDesc) {
 }
 
-CKeysymMaker& CKeysymMaker::operator=(CKeysymMaker& old) {
-  xkb_context_unref(XkbContext_);
-  xkb_compose_table_unref(XkbComposeTable_);
-  xkb_compose_state_unref(XkbComposeState_);
-  XkbContext_ = xkb_context_ref(old.XkbContext_);
-  XkbComposeTable_ = xkb_compose_table_ref(old.XkbComposeTable_);
-  XkbComposeState_ = xkb_compose_state_ref(old.XkbComposeState_);
-  XkbDesc_ = old.XkbDesc_;
-  return *this;
-}
-
-CKeysymMaker& CKeysymMaker::operator=(CKeysymMaker&& old) {
-  xkb_context_unref(XkbContext_);
-  xkb_compose_table_unref(XkbComposeTable_);
-  xkb_compose_state_unref(XkbComposeState_);
-  XkbContext_ = xkb_context_ref(old.XkbContext_);
-  XkbComposeTable_ = xkb_compose_table_ref(old.XkbComposeTable_);
-  XkbComposeState_ = xkb_compose_state_ref(old.XkbComposeState_);
-  XkbDesc_ = old.XkbDesc_;
-  return *this;
-}
-
-CKeysymMaker::CKeysymMaker(CKeysymMaker& old) {
-  xkb_context_unref(XkbContext_);
-  xkb_compose_table_unref(XkbComposeTable_);
-  xkb_compose_state_unref(XkbComposeState_);
-  XkbContext_ = xkb_context_ref(old.XkbContext_);
-  XkbComposeTable_ = xkb_compose_table_ref(old.XkbComposeTable_);
-  XkbComposeState_ = xkb_compose_state_ref(old.XkbComposeState_);
-  XkbDesc_ = old.XkbDesc_;
-}
 
 void CKeysymMaker::resetState() {
   xkb_compose_state_reset(XkbComposeState_);

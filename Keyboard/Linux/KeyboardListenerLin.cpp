@@ -25,7 +25,7 @@ CKeyboardListenerImplDesc::~CKeyboardListenerImplDesc() {
 }
 CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
     CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler)
-    : KeysymMaker_(CKeysymMaker(XkbDesc_)),
+    : KeysymMaker_(XkbDesc_),
       killer_flag_(std::make_shared<int>(0)) {
   // Set the Listener
 
