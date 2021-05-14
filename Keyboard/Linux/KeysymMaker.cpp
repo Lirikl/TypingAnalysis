@@ -5,7 +5,8 @@ namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
 
-CKeysymMakerContext::CKeysymMakerContext() : XkbContext_(xkb_context_new(XKB_CONTEXT_NO_FLAGS)) {
+CKeysymMakerContext::CKeysymMakerContext()
+    : XkbContext_(xkb_context_new(XKB_CONTEXT_NO_FLAGS)) {
 }
 CKeysymMakerContext::~CKeysymMakerContext() {
   xkb_context_unref(XkbContext_);
@@ -123,7 +124,9 @@ xkb_keysym_t CKeysymMaker::feedEvent(XIDeviceEvent* DeviceEvent) {
   xkb_keysym_t keysym = getPlainKeysym(DeviceEvent);
   auto XkbComposeFeedResult = xkb_compose_state_feed(XkbComposeState_, keysym);
   auto compose_status = xkb_compose_state_get_status(XkbComposeState_);
+  isLastDead = 0;
   if (XkbComposeFeedResult == XKB_COMPOSE_FEED_ACCEPTED) {
+    isLastDead = (compose_status == XKB_COMPOSE_COMPOSING);
     if (compose_status == XKB_COMPOSE_COMPOSING ||
         compose_status == XKB_COMPOSE_CANCELLED) {
       return keysym;

@@ -7,7 +7,8 @@ namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
 
-CKeyboardListenerImplDisplay::CKeyboardListenerImplDisplay() : X11Display_(XOpenDisplay(nullptr)) {
+CKeyboardListenerImplDisplay::CKeyboardListenerImplDisplay()
+    : X11Display_(XOpenDisplay(nullptr)) {
 }
 
 CKeyboardListenerImplDisplay::~CKeyboardListenerImplDisplay() {
@@ -40,7 +41,7 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XISetMask(X11EventMask_.mask, XI_KeyRelease);
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
   XSync(X11Display_, false);
-  //KeysymMaker_ = CKeysymMaker(XkbDesc_);
+  // KeysymMaker_ = CKeysymMaker(XkbDesc_);
   // TO DO
   // Set killerPromise to a non-trivial one
   killerPromise.set_value(CKiller(killer_flag_));
@@ -126,7 +127,14 @@ CKeyboardListenerLinImpl::getKeycode(XIDeviceEvent* X11CurrentDeviceEvent) {
   return X11CurrentDeviceEvent->detail;
 }
 
+int CKeyboardListenerLinImpl::isLastDead() {
+  return KeysymMaker_.isLastDead;
+}
+
 QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
+  if (isLastDead()) {
+    return QChar(0x2620);
+  }
   if (std::string(XKeysymToString(keysym)) == "Return")
     return QChar(0x2ba0);
   if (std::string(XKeysymToString(keysym)) == "Control_L")
@@ -150,7 +158,7 @@ QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
   if (std::string(XKeysymToString(keysym)) == "Escape")
     return QChar(0x2bbe);
   QString str = makeTextFromKeysym(keysym);
-  if (str.size() == 0) {
+  if (str.size() == 0 && str[0].isPrint()) {
     return QChar();
   }
   return str[0];

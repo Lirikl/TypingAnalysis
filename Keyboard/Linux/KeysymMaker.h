@@ -48,6 +48,7 @@ public:
   int getWidth(xkb_keycode_t);
   int getKt(xkb_keycode_t, int group_effective);
   int getShiftLevel(XIDeviceEvent*);
+  int isLastDead = 0;
   // private:
   XkbDescPtr XkbDesc_;
 };
