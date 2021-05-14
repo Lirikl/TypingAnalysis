@@ -70,10 +70,15 @@ int CKeysymMaker::getGroup(XIDeviceEvent* DeviceEvent) {
     effective_group = (int)XkbDesc_->map->key_sym_map[keycode].group_info - 1;
 }
 
+int CKeysymMaker::getWidth(xkb_keycode_t keycode) {
+  return XkbDesc_->map->key_sym_map[keycode].width;
+}
+
 xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) {
   xkb_keycode_t keycode = getKeycode(DeviceEvent);
   int effective_group = getGroup(DeviceEvent);
-  int width = (int)XkbDesc_->map->key_sym_map[keycode].width;
+  int width = getWidth(keycode);
+  //int width =  XkbDesc_->map->key_sym_map[keycode].width;
   int effective_mods = DeviceEvent->mods.effective;
   int kt = (int)XkbDesc_->map->key_sym_map[keycode].kt_index[effective_group];
   int shift_level = 0;

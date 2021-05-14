@@ -24,6 +24,7 @@ public:
   xkb_keysym_t feedEvent(XIDeviceEvent*);
   xkb_keysym_t getPlainKeysym(XIDeviceEvent*);
   int getGroup(XIDeviceEvent*);
+  int getWidth(xkb_keycode_t);
   // private:
   xkb_context* XkbContext_ = 0;
   xkb_compose_table* XkbComposeTable_ = 0;
