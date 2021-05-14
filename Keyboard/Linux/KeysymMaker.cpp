@@ -68,6 +68,7 @@ int CKeysymMaker::getGroup(XIDeviceEvent* DeviceEvent) {
   int effective_group = DeviceEvent->group.effective;
   if (effective_group >= (int)XkbDesc_->map->key_sym_map[keycode].group_info)
     effective_group = (int)XkbDesc_->map->key_sym_map[keycode].group_info - 1;
+  return effective_group;
 }
 
 int CKeysymMaker::getWidth(xkb_keycode_t keycode) {
