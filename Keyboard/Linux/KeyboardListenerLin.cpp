@@ -9,18 +9,9 @@ namespace NSLinux {
 
 CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
     CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler)
-    : killer_flag_(std::make_shared<int>(0)) {
+    : X11Display_(XOpenDisplay(nullptr)),
+      killer_flag_(std::make_shared<int>(0)) {
   // Set the Listener
-  X11Display_ = XOpenDisplay(nullptr);
-  if (X11Display_ == nullptr) {
-    throw std::runtime_error("Cannot open display");
-  }
-  int queryEvent, queryError;
-  if (!XQueryExtension(X11Display_, "XInputExtension", &xi_opcode_, &queryEvent,
-                       &queryError)) {
-    XCloseDisplay(X11Display_);
-    throw std::runtime_error("X Input extension not available\n");
-  }
   Window X11DefaultWindow = DefaultRootWindow(X11Display_);
   XIEventMask X11EventMask_;
   X11EventMask_.deviceid = XIAllDevices;
@@ -33,6 +24,7 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XISetMask(X11EventMask_.mask, XI_KeyRelease);
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
   XSync(X11Display_, false);
+
   XkbDesc_ = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
   KeysymMaker_ = CKeysymMaker(XkbDesc_);
   // TO DO
@@ -62,6 +54,7 @@ int CKeyboardListenerLinImpl::exec() {
   // Message loop
   XEvent X11CurrentEvent;
   XGenericEventCookie* X11CurrentEventCookie = &X11CurrentEvent.xcookie;
+  // havent found any way to send message
   while (isInteruptionRequested()) {
     XNextEvent(X11Display_, &X11CurrentEvent);
     if (!XGetEventData(X11Display_, X11CurrentEventCookie) ||
