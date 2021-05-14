@@ -5,15 +5,32 @@ namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
 
+CKeysymMakerContext::CKeysymMakerContext() : XkbContext_(xkb_context_new(XKB_CONTEXT_NO_FLAGS)) {
+}
+CKeysymMakerContext::~CKeysymMakerContext() {
+  xkb_context_unref(XkbContext_);
+}
+
+CKeysymMakerTable::CKeysymMakerTable()
+    : XkbComposeTable_(xkb_compose_table_new_from_locale(
+          XkbContext_, std::setlocale(LC_ALL, ""),
+          XKB_COMPOSE_COMPILE_NO_FLAGS)) {
+}
+CKeysymMakerTable::~CKeysymMakerTable() {
+  xkb_compose_table_unref(XkbComposeTable_);
+}
+
+CKeysymMakerState::CKeysymMakerState()
+    : XkbComposeState_(
+          xkb_compose_state_new(XkbComposeTable_, XKB_COMPOSE_STATE_NO_FLAGS)) {
+}
+CKeysymMakerState::~CKeysymMakerState() {
+  xkb_compose_state_unref(XkbComposeState_);
+}
+
 CKeysymMaker::CKeysymMaker() {
 }
-CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc)
-    : XkbDesc_(XkbDesc), XkbContext_(xkb_context_new(XKB_CONTEXT_NO_FLAGS)),
-      XkbComposeTable_(xkb_compose_table_new_from_locale(
-          XkbContext_, std::setlocale(LC_ALL, ""),
-          XKB_COMPOSE_COMPILE_NO_FLAGS)),
-      XkbComposeState_(
-          xkb_compose_state_new(XkbComposeTable_, XKB_COMPOSE_STATE_NO_FLAGS)) {
+CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc) : XkbDesc_(XkbDesc) {
 }
 
 CKeysymMaker& CKeysymMaker::operator=(CKeysymMaker& old) {
@@ -46,11 +63,6 @@ CKeysymMaker::CKeysymMaker(CKeysymMaker& old) {
   XkbComposeTable_ = xkb_compose_table_ref(old.XkbComposeTable_);
   XkbComposeState_ = xkb_compose_state_ref(old.XkbComposeState_);
   XkbDesc_ = old.XkbDesc_;
-}
-CKeysymMaker::~CKeysymMaker() {
-  xkb_context_unref(XkbContext_);
-  xkb_compose_table_unref(XkbComposeTable_);
-  xkb_compose_state_unref(XkbComposeState_);
 }
 
 void CKeysymMaker::resetState() {

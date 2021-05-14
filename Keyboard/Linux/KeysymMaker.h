@@ -12,12 +12,31 @@ namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
 
-class CKeysymMaker {
+class CKeysymMakerContext {
+public:
+  CKeysymMakerContext();
+  ~CKeysymMakerContext();
+  xkb_context* XkbContext_;
+};
+
+class CKeysymMakerTable: public CKeysymMakerContext {
+public:
+  CKeysymMakerTable();
+  ~CKeysymMakerTable();
+  xkb_compose_table* XkbComposeTable_;
+};
+class CKeysymMakerState: public CKeysymMakerTable {
+public:
+  CKeysymMakerState();
+  ~CKeysymMakerState();
+  xkb_compose_state* XkbComposeState_;
+};
+
+class CKeysymMaker: public CKeysymMakerState {
 public:
   CKeysymMaker();
   CKeysymMaker(XkbDescPtr);
   CKeysymMaker(CKeysymMaker&);
-  ~CKeysymMaker();
   CKeysymMaker& operator=(CKeysymMaker&);
   CKeysymMaker& operator=(CKeysymMaker&&);
   xkb_keysym_t feedEvent(XIDeviceEvent*);
@@ -30,10 +49,7 @@ public:
   int getKt(xkb_keycode_t, int group_effective);
   int getShiftLevel(XIDeviceEvent*);
   // private:
-  XkbDescPtr XkbDesc_ = 0;
-  xkb_context* XkbContext_ = 0;
-  xkb_compose_table* XkbComposeTable_ = 0;
-  xkb_compose_state* XkbComposeState_ = 0;
+  XkbDescPtr XkbDesc_;
 };
 
 } // namespace NSLinux
