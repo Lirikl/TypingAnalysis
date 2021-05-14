@@ -21,7 +21,21 @@ class CKeyboardHandler;
 
 namespace NSLinux {
 
-class CKeyboardListenerLinImpl : public QObject {
+class A {
+public:
+  A();
+  ~A();
+  Display* X11Display_;
+};
+
+class B : public A {
+public:
+  B();
+  ~B();
+  XkbDescPtr XkbDesc_;
+};
+
+class CKeyboardListenerLinImpl : public QObject, public B {
   Q_OBJECT
 
   friend class CKiller;
@@ -39,8 +53,6 @@ public:
   int exec();
 
 private:
-  Display* X11Display_;
-  XkbDescPtr XkbDesc_;
   int xi_opcode_;
   std::shared_ptr<int> killer_flag_;
   CKeysymMaker KeysymMaker_;

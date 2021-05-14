@@ -7,12 +7,26 @@ namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
 
+A::A() : X11Display_(XOpenDisplay(nullptr)) {
+}
+
+A::~A() {
+  XCloseDisplay(X11Display_);
+}
+
+B::B()
+    : XkbDesc_(
+          XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd)) {
+}
+
+B::~B() {
+  XkbFreeKeyboard(XkbDesc_, XkbAllComponentsMask, 1);
+}
 CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
     CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler)
-    : X11Display_(XOpenDisplay(nullptr)),
-      killer_flag_(std::make_shared<int>(0)) {
+    : killer_flag_(std::make_shared<int>(0)) {
   // Set the Listener
-  Window X11DefaultWindow = DefaultRootWindow(X11Display_);
+  X11Display_ = XOpenDisplay(nullptr);  Window X11DefaultWindow = DefaultRootWindow(X11Display_);
   XIEventMask X11EventMask_;
   X11EventMask_.deviceid = XIAllDevices;
   X11EventMask_.mask_len = XIMaskLen(XI_LASTEVENT);
@@ -24,8 +38,8 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XISetMask(X11EventMask_.mask, XI_KeyRelease);
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
   XSync(X11Display_, false);
-
-  XkbDesc_ = XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
+  XkbDesc_=
+      XkbGetKeyboard(X11Display_, XkbAllComponentsMask, XkbUseCoreKbd);
   KeysymMaker_ = CKeysymMaker(XkbDesc_);
   // TO DO
   // Set killerPromise to a non-trivial one
@@ -40,8 +54,6 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
 }
 
 CKeyboardListenerLinImpl::~CKeyboardListenerLinImpl() {
-  XkbFreeKeyboard(XkbDesc_, XkbAllComponentsMask, 1);
-  XCloseDisplay(X11Display_);
   disconnect(this, &CKeyboardListenerLinImpl::KeyPressing, nullptr, nullptr);
   disconnect(this, &CKeyboardListenerLinImpl::KeyReleasing, nullptr, nullptr);
 }
