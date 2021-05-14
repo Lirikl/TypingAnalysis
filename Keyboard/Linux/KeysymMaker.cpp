@@ -23,26 +23,35 @@ CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc) {
 }
 
 CKeysymMaker& CKeysymMaker::operator=(CKeysymMaker& old) {
-  if (this != &old) {
-    xkb_context_unref(XkbContext_);
-    xkb_compose_table_unref(XkbComposeTable_);
-    xkb_compose_state_unref(XkbComposeState_);
-    XkbContext_ = xkb_context_ref(old.XkbContext_);
-    XkbComposeTable_ = xkb_compose_table_ref(old.XkbComposeTable_);
-    XkbComposeState_ = xkb_compose_state_ref(old.XkbComposeState_);
-    XkbDesc_ = old.XkbDesc_;
-  }
+  xkb_context_unref(XkbContext_);
+  xkb_compose_table_unref(XkbComposeTable_);
+  xkb_compose_state_unref(XkbComposeState_);
+  XkbContext_ = xkb_context_ref(old.XkbContext_);
+  XkbComposeTable_ = xkb_compose_table_ref(old.XkbComposeTable_);
+  XkbComposeState_ = xkb_compose_state_ref(old.XkbComposeState_);
+  XkbDesc_ = old.XkbDesc_;
   return *this;
 }
 
 CKeysymMaker& CKeysymMaker::operator=(CKeysymMaker&& old) {
-  if (this != &old) {
-    std::swap(XkbContext_, old.XkbContext_);
-    std::swap(XkbComposeTable_, old.XkbComposeTable_);
-    std::swap(XkbComposeState_, old.XkbComposeState_);
-    std::swap(XkbDesc_, old.XkbDesc_);
-  }
+  xkb_context_unref(XkbContext_);
+  xkb_compose_table_unref(XkbComposeTable_);
+  xkb_compose_state_unref(XkbComposeState_);
+  XkbContext_ = xkb_context_ref(old.XkbContext_);
+  XkbComposeTable_ = xkb_compose_table_ref(old.XkbComposeTable_);
+  XkbComposeState_ = xkb_compose_state_ref(old.XkbComposeState_);
+  XkbDesc_ = old.XkbDesc_;
   return *this;
+}
+
+CKeysymMaker::CKeysymMaker(CKeysymMaker& old) {
+  xkb_context_unref(XkbContext_);
+  xkb_compose_table_unref(XkbComposeTable_);
+  xkb_compose_state_unref(XkbComposeState_);
+  XkbContext_ = xkb_context_ref(old.XkbContext_);
+  XkbComposeTable_ = xkb_compose_table_ref(old.XkbComposeTable_);
+  XkbComposeState_ = xkb_compose_state_ref(old.XkbComposeState_);
+  XkbDesc_ = old.XkbDesc_;
 }
 CKeysymMaker::~CKeysymMaker() {
   xkb_context_unref(XkbContext_);
@@ -50,7 +59,7 @@ CKeysymMaker::~CKeysymMaker() {
   xkb_compose_state_unref(XkbComposeState_);
 }
 
-xkb_keysym_t CKeysymMaker::simpleKeysym(XIDeviceEvent* DeviceEvent) {
+xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) {
   int effective_group = DeviceEvent->group.effective;
   if (effective_group >=
       (int)XkbDesc_->map->key_sym_map[DeviceEvent->detail].group_info)
@@ -75,7 +84,7 @@ xkb_keysym_t CKeysymMaker::simpleKeysym(XIDeviceEvent* DeviceEvent) {
   return keysym;
 }
 xkb_keysym_t CKeysymMaker::feedEvent(XIDeviceEvent* DeviceEvent) {
-  auto keysym = simpleKeysym(DeviceEvent);
+  auto keysym = getPlainKeysym(DeviceEvent);
   auto XkbComposeFeedResult = xkb_compose_state_feed(XkbComposeState_, keysym);
   auto compose_status = xkb_compose_state_get_status(XkbComposeState_);
   if (XkbComposeFeedResult == XKB_COMPOSE_FEED_ACCEPTED) {

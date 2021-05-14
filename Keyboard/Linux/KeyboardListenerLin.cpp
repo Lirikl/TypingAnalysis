@@ -128,7 +128,7 @@ CKeyboardListenerLinImpl::getKeycode(XIDeviceEvent* X11CurrentDeviceEvent) {
 QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
   if (std::string(XKeysymToString(keysym)) == "Return")
     return QChar(0x2ba0);
- if (std::string(XKeysymToString(keysym)) == "Control_L")
+  if (std::string(XKeysymToString(keysym)) == "Control_L")
     return QChar(0x2343);
   if (std::string(XKeysymToString(keysym)) == "Control_R")
     return QChar(0x2344);

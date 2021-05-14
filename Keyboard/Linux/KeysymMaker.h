@@ -16,11 +16,13 @@ class CKeysymMaker {
 public:
   CKeysymMaker();
   CKeysymMaker(XkbDescPtr);
+  CKeysymMaker(CKeysymMaker&);
   CKeysymMaker& operator=(CKeysymMaker&);
   CKeysymMaker& operator=(CKeysymMaker&&);
   ~CKeysymMaker();
   xkb_keysym_t feedEvent(XIDeviceEvent*);
-  xkb_keysym_t simpleKeysym(XIDeviceEvent*);
+  xkb_keysym_t getPlainKeysym(XIDeviceEvent*);
+
 
   // private:
   xkb_context* XkbContext_ = 0;
