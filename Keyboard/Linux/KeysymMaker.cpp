@@ -102,8 +102,7 @@ int CKeysymMaker::getShiftLevel(XIDeviceEvent* DeviceEvent) {
   int shift_level = 0;
   for (int i = 0; i < XkbDesc_->map->types[kt].map_count; i++) {
     if (XkbDesc_->map->types[kt].map[i].mods.mask == effective_mods) {
-      shift_level = XkbDesc_->map->types[kt].map[i].level;
-      break;
+      return shift_level = XkbDesc_->map->types[kt].map[i].level;
     }
   }
   return shift_level;
