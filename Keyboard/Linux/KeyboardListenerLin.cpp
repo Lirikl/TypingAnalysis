@@ -90,17 +90,16 @@ int CKeyboardListenerLinImpl::keyPressEvent(
   XIDeviceEvent* X11CurrentDeviceEvent =
       getXIDeviceEvent(X11CurrentEventCookie);
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
-  makeTextFromKeysym(keysym);
   key_press.KeyText = makeTextFromKeysym(keysym);
-  key_press.KeyPosition = X11CurrentDeviceEvent->detail;
+  key_press.KeyPosition = getKeycode(X11CurrentDeviceEvent);
   KeyPressing(key_press);
   return 0;
 }
 
 QString CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) {
-  char result_string[33];
-  int result_string_len = xkb_keysym_to_utf8(keysym, result_string, 33);
-  return QString::fromUtf8(result_string, result_string_len - 1);
+  char result_string[33] = "";
+  xkb_keysym_to_utf8(keysym, result_string, 33);
+  return QString::fromUtf8(result_string, -1);
 }
 
 int CKeyboardListenerLinImpl::keyReleaseEvent(
@@ -110,7 +109,7 @@ int CKeyboardListenerLinImpl::keyReleaseEvent(
   XIDeviceEvent* X11CurrentDeviceEvent =
       getXIDeviceEvent(X11CurrentEventCookie);
   key_release.Time = Timer->get();
-  key_release.KeyPosition = X11CurrentDeviceEvent->detail;
+  key_release.KeyPosition = getKeycode(X11CurrentDeviceEvent);
   KeyReleasing(key_release);
   return 0;
 }
@@ -119,6 +118,12 @@ XIDeviceEvent* CKeyboardListenerLinImpl::getXIDeviceEvent(
     XGenericEventCookie* X11CurrentEventCookie) {
   return static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
 }
+
+xkb_keycode_t
+CKeyboardListenerLinImpl::getKeycode(XIDeviceEvent* X11CurrentDeviceEvent) {
+  return X11CurrentDeviceEvent->detail;
+}
+
 // TO DO
 // a specific ctor of CKiller
 // CKiller::CKiller(...) {
