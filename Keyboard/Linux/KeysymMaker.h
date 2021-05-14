@@ -23,9 +23,11 @@ public:
   xkb_keycode_t getKeycode(XIDeviceEvent*);
   xkb_keysym_t feedEvent(XIDeviceEvent*);
   xkb_keysym_t getPlainKeysym(XIDeviceEvent*);
+  int getMod(XIDeviceEvent* DeviceEvent, int group_effective);
   int getGroup(XIDeviceEvent*);
   int getWidth(xkb_keycode_t);
-  int getKt(xkb_keycode_t, int);
+  int getKt(xkb_keycode_t, int group_effective);
+  int getShiftLevel(XIDeviceEvent*);
   // private:
   xkb_context* XkbContext_ = 0;
   xkb_compose_table* XkbComposeTable_ = 0;
