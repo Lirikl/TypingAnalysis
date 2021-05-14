@@ -63,11 +63,16 @@ xkb_keycode_t CKeysymMaker::getKeycode(XIDeviceEvent* DeviceEvent) {
   return DeviceEvent->detail;
 }
 
-xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) {
+int CKeysymMaker::getGroup(XIDeviceEvent* DeviceEvent) {
   xkb_keycode_t keycode = getKeycode(DeviceEvent);
   int effective_group = DeviceEvent->group.effective;
   if (effective_group >= (int)XkbDesc_->map->key_sym_map[keycode].group_info)
     effective_group = (int)XkbDesc_->map->key_sym_map[keycode].group_info - 1;
+}
+
+xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) {
+  xkb_keycode_t keycode = getKeycode(DeviceEvent);
+  int effective_group = getGroup(DeviceEvent);
   int width = (int)XkbDesc_->map->key_sym_map[keycode].width;
   int effective_mods = DeviceEvent->mods.effective;
   int kt = (int)XkbDesc_->map->key_sym_map[keycode].kt_index[effective_group];
