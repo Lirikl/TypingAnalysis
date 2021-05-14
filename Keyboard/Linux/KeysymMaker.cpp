@@ -7,19 +7,28 @@ namespace NSLinux {
 
 CKeysymMaker::CKeysymMaker() {
 }
-CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc) {
-  XkbDesc_ = XkbDesc;
+CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc)
+   // : XkbDesc_(XkbDesc)//, XkbContext_(xkb_context_new(XKB_CONTEXT_NO_FLAGS))
+      //,
+      //XkbComposeTable_(xkb_compose_table_new_from_locale(
+      //    XkbContext_, std::setlocale(LC_ALL, ""),
+      //    XKB_COMPOSE_COMPILE_NO_FLAGS))
+      //,
+      //XkbComposeState_(
+      //   xkb_compose_state_new(XkbComposeTable_, XKB_COMPOSE_STATE_NO_FLAGS))
+{
+   XkbDesc_ = XkbDesc;
 
-  const char* locale;
-  // locale = std::setlocale(LC_ALL,
+   const char* locale;
+   //locale = std::setlocale(LC_ALL,
   //                   "ru_RU.UTF-8"); // for debug because it makes broken
-  locale = std::setlocale(LC_ALL, ""); // for release
-  XkbContext_ = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
+   locale = std::setlocale(LC_ALL, ""); // for release
+   XkbContext_ = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
   XkbComposeTable_ = xkb_compose_table_new_from_locale(
       XkbContext_, locale, XKB_COMPOSE_COMPILE_NO_FLAGS);
   XkbComposeState_ =
       xkb_compose_state_new(XkbComposeTable_, XKB_COMPOSE_STATE_NO_FLAGS);
-  xkb_compose_state_reset(XkbComposeState_);
+   xkb_compose_state_reset(XkbComposeState_);
 }
 
 CKeysymMaker& CKeysymMaker::operator=(CKeysymMaker& old) {
@@ -95,7 +104,6 @@ int CKeysymMaker::getShiftLevel(XIDeviceEvent* DeviceEvent) {
       break;
     }
   }
-  shift_level = XkbDesc_->map->types[kt].map[1].level;
   return shift_level;
 }
 

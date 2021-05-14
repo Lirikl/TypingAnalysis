@@ -29,10 +29,10 @@ public:
   int getKt(xkb_keycode_t, int group_effective);
   int getShiftLevel(XIDeviceEvent*);
   // private:
+  XkbDescPtr XkbDesc_ = 0;
   xkb_context* XkbContext_ = 0;
   xkb_compose_table* XkbComposeTable_ = 0;
   xkb_compose_state* XkbComposeState_ = 0;
-  XkbDescPtr XkbDesc_ = 0;
 };
 
 } // namespace NSLinux

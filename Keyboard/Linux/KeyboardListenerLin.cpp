@@ -9,7 +9,7 @@ namespace NSLinux {
 
 CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
     CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler)
-    : killer_flag_(0) {
+    : killer_flag_(std::make_shared<int>(0)) {
   // Set the Listener
   X11Display_ = XOpenDisplay(nullptr);
   if (X11Display_ == nullptr) {
@@ -48,10 +48,13 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
 }
 
 CKeyboardListenerLinImpl::~CKeyboardListenerLinImpl() {
-  disconnect(this, &CKeyboardListenerLinImpl::KeyPressing, nullptr, nullptr);
-  disconnect(this, &CKeyboardListenerLinImpl::KeyReleasing, nullptr, nullptr);
   XkbFreeKeyboard(XkbDesc_, XkbAllComponentsMask, 1);
   XCloseDisplay(X11Display_);
+  disconnect(this, &CKeyboardListenerLinImpl::KeyPressing, nullptr, nullptr);
+  disconnect(this, &CKeyboardListenerLinImpl::KeyReleasing, nullptr, nullptr);
+}
+int CKeyboardListenerLinImpl::isInteruptionRequested() {
+  return !*killer_flag_;
 }
 
 int CKeyboardListenerLinImpl::exec() {
@@ -59,9 +62,7 @@ int CKeyboardListenerLinImpl::exec() {
   // Message loop
   XEvent X11CurrentEvent;
   XGenericEventCookie* X11CurrentEventCookie = &X11CurrentEvent.xcookie;
-
-  // while (!myThread_->isInterruptionRequested()) {
-  while (!*killer_flag_) {
+  while (isInteruptionRequested()) {
     XNextEvent(X11Display_, &X11CurrentEvent);
     if (!XGetEventData(X11Display_, X11CurrentEventCookie) ||
         X11CurrentEventCookie->extension != xi_opcode_) {
