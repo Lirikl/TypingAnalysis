@@ -8,6 +8,7 @@
 #include <QThread>
 #include <future>
 #include <iostream>
+#include <string>
 
 namespace NSApplication {
 namespace NSKeyboard {
@@ -48,6 +49,7 @@ private:
   XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*);
   xkb_keycode_t getKeycode(XIDeviceEvent*);
   QString makeTextFromKeysym(xkb_keysym_t);
+  QChar getLabel(xkb_keysym_t);
   // Implementation details
 };
 

@@ -18,7 +18,6 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   if (!XQueryExtension(X11Display_, "XInputExtension", &xi_opcode_, &queryEvent,
                        &queryError)) {
     XCloseDisplay(X11Display_);
-    // need to chage way of using exeptions
     throw std::runtime_error("X Input extension not available\n");
   }
   Window X11DefaultWindow = DefaultRootWindow(X11Display_);
@@ -93,6 +92,7 @@ int CKeyboardListenerLinImpl::keyPressEvent(
   xkb_keysym_t keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
   key_press.KeyText = makeTextFromKeysym(keysym);
   key_press.KeyPosition = getKeycode(X11CurrentDeviceEvent);
+  key_press.KeyLabel = getLabel(keysym);
   emit KeyPressing(key_press);
   return 0;
 }
@@ -123,6 +123,36 @@ QString CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) {
 xkb_keycode_t
 CKeyboardListenerLinImpl::getKeycode(XIDeviceEvent* X11CurrentDeviceEvent) {
   return X11CurrentDeviceEvent->detail;
+}
+
+QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
+  if (std::string(XKeysymToString(keysym)) == "Return")
+    return QChar(0x2ba0);
+ if (std::string(XKeysymToString(keysym)) == "Control_L")
+    return QChar(0x2343);
+  if (std::string(XKeysymToString(keysym)) == "Control_R")
+    return QChar(0x2344);
+  if (std::string(XKeysymToString(keysym)) == "Alt_L")
+    return QChar(0x2347);
+  if (std::string(XKeysymToString(keysym)) == "Alt_R")
+    return QChar(0x2348);
+  if (std::string(XKeysymToString(keysym)) == "Shift_L")
+    return QChar(0x2B01);
+  if (std::string(XKeysymToString(keysym)) == "Shift_R")
+    return QChar(0x2B00);
+  if (std::string(XKeysymToString(keysym)) == "BackSpace")
+    return QChar(0x232B);
+  if (std::string(XKeysymToString(keysym)) == "Caps_Lock")
+    return QChar(0x2B89);
+  if (std::string(XKeysymToString(keysym)) == "Tab")
+    return QChar(0x2b7e);
+  if (std::string(XKeysymToString(keysym)) == "Escape")
+    return QChar(0x2bbe);
+  QString str = makeTextFromKeysym(keysym);
+  if (str.size() == 0) {
+    return QChar();
+  }
+  return str[0];
 }
 
 // TO DO
