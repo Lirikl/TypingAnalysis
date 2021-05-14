@@ -25,8 +25,7 @@ CKeyboardListenerImplDesc::~CKeyboardListenerImplDesc() {
 }
 CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
     CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler)
-    : KeysymMaker_(XkbDesc_),
-      killer_flag_(std::make_shared<int>(0)) {
+    : KeysymMaker_(XkbDesc_), killer_flag_(std::make_shared<int>(0)) {
   // Set the Listener
 
   Window X11DefaultWindow = DefaultRootWindow(X11Display_);
@@ -73,18 +72,22 @@ int CKeyboardListenerLinImpl::exec() {
     if (!XGetEventData(X11Display_, X11CurrentEventCookie)) {
       continue;
     }
-    if (X11CurrentEventCookie->evtype == XI_KeyPress) {
-      keyPressEvent(X11CurrentEventCookie);
-    }
-    if (X11CurrentEventCookie->evtype == XI_KeyRelease) {
-      keyReleaseEvent(X11CurrentEventCookie);
+    switch (X11CurrentEventCookie->evtype) {
+    case XI_KeyPress:
+      handleKeyPress(X11CurrentEventCookie);
+      break;
+    case XI_KeyRelease:
+      handleKeyRelease(X11CurrentEventCookie);
+      break;
+    default:
+      break;
     }
     XFreeEventData(X11Display_, X11CurrentEventCookie);
   }
   return 0;
 }
 
-int CKeyboardListenerLinImpl::keyPressEvent(
+int CKeyboardListenerLinImpl::handleKeyPress(
     XGenericEventCookie* X11CurrentEventCookie) {
   CKeyPressing key_press = {};
   CTimerAccess Timer;
@@ -99,7 +102,7 @@ int CKeyboardListenerLinImpl::keyPressEvent(
   return 0;
 }
 
-int CKeyboardListenerLinImpl::keyReleaseEvent(
+int CKeyboardListenerLinImpl::handleKeyRelease(
     XGenericEventCookie* X11CurrentEventCookie) {
   CKeyReleasing key_release = {};
   CTimerAccess Timer;

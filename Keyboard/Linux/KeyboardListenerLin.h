@@ -55,8 +55,8 @@ public:
 private:
   CKeysymMaker KeysymMaker_;
   std::shared_ptr<int> killer_flag_;
-  int keyPressEvent(XGenericEventCookie*);
-  int keyReleaseEvent(XGenericEventCookie*);
+  int handleKeyPress(XGenericEventCookie*);
+  int handleKeyRelease(XGenericEventCookie*);
   int isInteruptionRequested();
   XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*);
   xkb_keycode_t getKeycode(XIDeviceEvent*);
