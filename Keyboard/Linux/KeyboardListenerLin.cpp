@@ -79,11 +79,6 @@ int CKeyboardListenerLinImpl::exec() {
   return 0;
 }
 
-int CKeyboardListenerLinImpl::extractEventInfo(
-    XGenericEventCookie* X11CurrentEventCookie) {
-  return 0;
-}
-
 int CKeyboardListenerLinImpl::keyPressEvent(
     XGenericEventCookie* X11CurrentEventCookie) {
   CKeyPressing key_press = {};

@@ -45,7 +45,6 @@ private:
   std::shared_ptr<int> killer_flag_;
   CKeysymMaker KeysymMaker_;
 
-  int extractEventInfo(XGenericEventCookie*);
   int keyPressEvent(XGenericEventCookie*);
   int keyReleaseEvent(XGenericEventCookie*);
   int isInteruptionRequested();
