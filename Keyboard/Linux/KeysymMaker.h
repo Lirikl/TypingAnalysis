@@ -17,11 +17,12 @@ public:
   CKeysymMaker();
   CKeysymMaker(XkbDescPtr);
   CKeysymMaker(CKeysymMaker&);
+  ~CKeysymMaker();
   CKeysymMaker& operator=(CKeysymMaker&);
   CKeysymMaker& operator=(CKeysymMaker&&);
-  ~CKeysymMaker();
-  xkb_keycode_t getKeycode(XIDeviceEvent*);
   xkb_keysym_t feedEvent(XIDeviceEvent*);
+  void resetState();
+  xkb_keycode_t getKeycode(XIDeviceEvent*);
   xkb_keysym_t getPlainKeysym(XIDeviceEvent*);
   int getMod(XIDeviceEvent* DeviceEvent, int group_effective);
   int getGroup(XIDeviceEvent*);

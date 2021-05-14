@@ -14,7 +14,6 @@ CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc)
           XKB_COMPOSE_COMPILE_NO_FLAGS)),
       XkbComposeState_(
           xkb_compose_state_new(XkbComposeTable_, XKB_COMPOSE_STATE_NO_FLAGS)) {
-  xkb_compose_state_reset(XkbComposeState_);
 }
 
 CKeysymMaker& CKeysymMaker::operator=(CKeysymMaker& old) {
@@ -52,6 +51,10 @@ CKeysymMaker::~CKeysymMaker() {
   xkb_context_unref(XkbContext_);
   xkb_compose_table_unref(XkbComposeTable_);
   xkb_compose_state_unref(XkbComposeState_);
+}
+
+void CKeysymMaker::resetState() {
+  xkb_compose_state_reset(XkbComposeState_);
 }
 
 xkb_keycode_t CKeysymMaker::getKeycode(XIDeviceEvent* DeviceEvent) {
