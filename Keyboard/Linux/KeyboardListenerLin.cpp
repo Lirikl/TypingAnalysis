@@ -90,13 +90,17 @@ int CKeyboardListenerLinImpl::keyPressEvent(
   XIDeviceEvent* X11CurrentDeviceEvent =
       getXIDeviceEvent(X11CurrentEventCookie);
   auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
-  char result_string[10];
-  int result_string_len = xkb_keysym_to_utf8(keysym, result_string, 10);
-  key_press.KeyText = QString::fromUtf8(result_string, result_string_len - 1);
-  std::cout << "SYMBOL !!!!" << XKeysymToString(keysym) << std::endl;
+  makeTextFromKeysym(keysym);
+  key_press.KeyText = makeTextFromKeysym(keysym);
   key_press.KeyPosition = X11CurrentDeviceEvent->detail;
   KeyPressing(key_press);
   return 0;
+}
+
+QString CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) {
+  char result_string[33];
+  int result_string_len = xkb_keysym_to_utf8(keysym, result_string, 33);
+  return QString::fromUtf8(result_string, result_string_len - 1);
 }
 
 int CKeyboardListenerLinImpl::keyReleaseEvent(

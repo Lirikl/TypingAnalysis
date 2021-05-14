@@ -46,6 +46,7 @@ private:
   int keyPressEvent(XGenericEventCookie*);
   int keyReleaseEvent(XGenericEventCookie*);
   XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*);
+  QString makeTextFromKeysym(xkb_keysym_t);
   // Implementation details
 };
 
