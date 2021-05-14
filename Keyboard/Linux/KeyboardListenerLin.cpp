@@ -17,6 +17,7 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   int queryEvent, queryError;
   if (!XQueryExtension(X11Display_, "XInputExtension", &xi_opcode_, &queryEvent,
                        &queryError)) {
+    XCloseDisplay(X11Display_);
     // need to chage way of using exeptions
     throw std::runtime_error("X Input extension not available\n");
   }
@@ -89,34 +90,34 @@ int CKeyboardListenerLinImpl::keyPressEvent(
   key_press.Time = Timer->get();
   XIDeviceEvent* X11CurrentDeviceEvent =
       getXIDeviceEvent(X11CurrentEventCookie);
-  auto keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
+  xkb_keysym_t keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
   key_press.KeyText = makeTextFromKeysym(keysym);
   key_press.KeyPosition = getKeycode(X11CurrentDeviceEvent);
-  KeyPressing(key_press);
+  emit KeyPressing(key_press);
   return 0;
-}
-
-QString CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) {
-  char result_string[33] = "";
-  xkb_keysym_to_utf8(keysym, result_string, 33);
-  return QString::fromUtf8(result_string, -1);
 }
 
 int CKeyboardListenerLinImpl::keyReleaseEvent(
     XGenericEventCookie* X11CurrentEventCookie) {
   CKeyReleasing key_release = {};
   CTimerAccess Timer;
+  key_release.Time = Timer->get();
   XIDeviceEvent* X11CurrentDeviceEvent =
       getXIDeviceEvent(X11CurrentEventCookie);
-  key_release.Time = Timer->get();
   key_release.KeyPosition = getKeycode(X11CurrentDeviceEvent);
-  KeyReleasing(key_release);
+  emit KeyReleasing(key_release);
   return 0;
 }
 
 XIDeviceEvent* CKeyboardListenerLinImpl::getXIDeviceEvent(
     XGenericEventCookie* X11CurrentEventCookie) {
   return static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
+}
+
+QString CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) {
+  char result_string[33] = "";
+  xkb_keysym_to_utf8(keysym, result_string, 33);
+  return QString::fromUtf8(result_string, -1);
 }
 
 xkb_keycode_t
