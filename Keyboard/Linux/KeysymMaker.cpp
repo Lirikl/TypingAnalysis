@@ -32,7 +32,6 @@ CKeysymMakerState::~CKeysymMakerState() {
 CKeysymMaker::CKeysymMaker(XkbDescPtr XkbDesc) : XkbDesc_(XkbDesc) {
 }
 
-
 void CKeysymMaker::resetState() {
   xkb_compose_state_reset(XkbComposeState_);
 }
@@ -87,21 +86,25 @@ xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) {
 }
 
 xkb_keysym_t CKeysymMaker::feedEvent(XIDeviceEvent* DeviceEvent) {
-  xkb_keysym_t keysym = getPlainKeysym(DeviceEvent);
+  return feedKeysym(getPlainKeysym(DeviceEvent));
+}
+
+xkb_keysym_t CKeysymMaker::feedKeysym(xkb_keysym_t keysym) {
+  LastKeysym_ = keysym;
   auto XkbComposeFeedResult = xkb_compose_state_feed(XkbComposeState_, keysym);
   auto compose_status = xkb_compose_state_get_status(XkbComposeState_);
-  isLastDead = 0;
+  isLastDead_ = 0;
   if (XkbComposeFeedResult == XKB_COMPOSE_FEED_ACCEPTED) {
-    isLastDead = (compose_status == XKB_COMPOSE_COMPOSING);
+    isLastDead_ = (compose_status == XKB_COMPOSE_COMPOSING);
     if (compose_status == XKB_COMPOSE_COMPOSING ||
         compose_status == XKB_COMPOSE_CANCELLED) {
-      return keysym;
+      return LastKeysym_;
     }
     if (compose_status == XKB_COMPOSE_COMPOSED) {
-      return xkb_compose_state_get_one_sym(XkbComposeState_);
+      return LastKeysym_ = xkb_compose_state_get_one_sym(XkbComposeState_);
     }
   }
-  return keysym;
+  return LastKeysym_;
 }
 } // namespace NSLinux
 } // namespace NSKeyboard

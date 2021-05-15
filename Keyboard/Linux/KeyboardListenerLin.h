@@ -54,6 +54,7 @@ public:
 
 private:
   CKeysymMaker KeysymMaker_;
+  CKeysymMaker DeadLabelMaker_;
   std::shared_ptr<int> killer_flag_;
   int handleKeyPress(XGenericEventCookie*);
   int handleKeyRelease(XGenericEventCookie*);
@@ -63,6 +64,7 @@ private:
   QString makeTextFromKeysym(xkb_keysym_t);
   QChar getLabel(xkb_keysym_t);
   int isLastDead();
+  xkb_keysym_t getLastKeysym();
   // Implementation details
 };
 
