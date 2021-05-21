@@ -101,7 +101,7 @@ int CKeyboardListenerLinImpl::handleKeyPress(
       getXIDeviceEvent(X11CurrentEventCookie);
   xkb_keysym_t keysym = KeysymMaker_.feedEvent(X11CurrentDeviceEvent);
   key_press.KeyText = makeTextFromKeysym(keysym);
-  key_press.KeyPosition = getKeycode(X11CurrentDeviceEvent);
+  key_press.KeyPosition = PositionMaker_.make(getKeycode(X11CurrentDeviceEvent));
   key_press.KeyLabel = getLabel(keysym);
   emit KeyPressing(key_press);
   return 0;

@@ -11,7 +11,6 @@
 namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
-
 class CKeysymMakerContext {
 public:
   CKeysymMakerContext();

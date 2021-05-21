@@ -146,11 +146,13 @@ linux {
     HEADERS += \
     Keyboard/Linux/KeyboardListenerLin.h \    
     Keyboard/Linux/KeysymMaker.h \
-    Keyboard/Linux/x11includes.h\
+    Keyboard/Linux/KeyPositionLin.h \
+    Keyboard/Linux/x11includes.h
 
     SOURCES += \
     Keyboard/Linux/KeyboardListenerLin.cpp \    
-    Keyboard/Linux/KeysymMaker.cpp
+    Keyboard/Linux/KeysymMaker.cpp \
+    Keyboard/Linux/KeyPositionLin.cpp
 
 }
 

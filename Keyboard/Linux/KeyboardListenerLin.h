@@ -2,10 +2,10 @@
 #define NSAPPLICATION_NSKEYBOARD_NSLINUX_CKEYBOARDLISTENERLIN_H
 
 #include "Keyboard/AnyKeyboardKiller.h"
-
 #include "KeysymMaker.h"
 #include "TimerAccess.h"
 #include "Keyboard/KeyboardHandler.h"
+#include "KeyPositionLin.h"
 #include <QObject>
 #include <QThread>
 #include <future>
@@ -61,6 +61,7 @@ private:
   Window MessageWindow_;
   CKeysymMaker KeysymMaker_;
   CKeysymMaker DeadLabelMaker_;
+  CKeyPositionLin PositionMaker_;
   int handleKeyPress(XGenericEventCookie*);
   int handleKeyRelease(XGenericEventCookie*);
   XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*) const;
