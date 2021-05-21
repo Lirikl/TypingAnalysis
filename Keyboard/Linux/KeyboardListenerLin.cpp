@@ -1,7 +1,4 @@
 #include "KeyboardListenerLin.h"
-#include "Keyboard/KeyboardHandler.h"
-#include "TimerAccess.h"
-#include <iostream>
 
 namespace NSApplication {
 namespace NSKeyboard {
@@ -25,9 +22,9 @@ CKeyboardListenerImplDesc::~CKeyboardListenerImplDesc() {
 }
 CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
     CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler)
-    : KeysymMaker_(XkbDesc_), DeadLabelMaker_(XkbDesc_),
-      killer_flag_(std::make_shared<int>(0)) {
-  // Set the Listener
+    : MessageWindow_(XCreateSimpleWindow(
+          X11Display_, DefaultRootWindow(X11Display_), 0, 0, 1, 1, 0, 0, 0)),
+      KeysymMaker_(XkbDesc_), DeadLabelMaker_(XkbDesc_) {
 
   Window X11DefaultWindow = DefaultRootWindow(X11Display_);
   XIEventMask X11EventMask_;
@@ -39,12 +36,13 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   XISetMask(X11EventMask_.mask,
             XI_KeyPress); // maybe it should me moved from constructor into Do?
   XISetMask(X11EventMask_.mask, XI_KeyRelease);
+
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
-  XSync(X11Display_, false);
+
   // KeysymMaker_ = CKeysymMaker(XkbDesc_);
   // TO DO
   // Set killerPromise to a non-trivial one
-  killerPromise.set_value(CKiller(killer_flag_));
+  killerPromise.set_value(CKiller(X11Display_, MessageWindow_));
 
   connect(this, &CKeyboardListenerLinImpl::KeyPressing, KeyboardHandler,
           &CKeyboardHandler::onKeyPressing,
@@ -57,9 +55,12 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
 CKeyboardListenerLinImpl::~CKeyboardListenerLinImpl() {
   disconnect(this, &CKeyboardListenerLinImpl::KeyPressing, nullptr, nullptr);
   disconnect(this, &CKeyboardListenerLinImpl::KeyReleasing, nullptr, nullptr);
+  XDestroyWindow(X11Display_, MessageWindow_);
 }
-int CKeyboardListenerLinImpl::isInteruptionRequested() {
-  return !*killer_flag_;
+void sendKillMessage(Display* xconn, Window xwin);
+
+int CKeyboardListenerLinImpl::isInteruptionRequested(XEvent& ev) {
+  return (ev.type == ClientMessage) && !strcmp(ev.xclient.data.b, "kill");
 }
 
 int CKeyboardListenerLinImpl::exec() {
@@ -67,12 +68,16 @@ int CKeyboardListenerLinImpl::exec() {
   // Message loop
   XEvent X11CurrentEvent;
   XGenericEventCookie* X11CurrentEventCookie = &X11CurrentEvent.xcookie;
-  // havent found any way to send message
-  while (isInteruptionRequested()) {
+  while (1) {
     XNextEvent(X11Display_, &X11CurrentEvent);
+    if (isInteruptionRequested(X11CurrentEvent)) {
+      break;
+    }
+
     if (!XGetEventData(X11Display_, X11CurrentEventCookie)) {
       continue;
     }
+
     switch (X11CurrentEventCookie->evtype) {
     case XI_KeyPress:
       handleKeyPress(X11CurrentEventCookie);
@@ -181,15 +186,25 @@ QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
 // CKiller::CKiller(...) {
 //
 //}
-CKiller::CKiller(std::shared_ptr<int> spt) : killer_flag_(spt) {
+
+XEvent CKiller::makeClientMessageEvent(const char* text) const {
+  XEvent evt;
+  evt.xclient.type = ClientMessage;
+  evt.xclient.serial = 0;
+  evt.xclient.send_event = 1;
+  evt.xclient.format = 32;
+  evt.xclient.window = MessageWindow;
+  strncpy(evt.xclient.data.b, text, sizeof(evt.xclient.data.b));
+  return evt;
+}
+
+CKiller::CKiller(Display* dpy, Window wnd)
+    : X11Display_(dpy), MessageWindow(wnd) {
 }
 
 void CKiller::stopListener() const {
-  if (auto spt = killer_flag_.lock()) {
-    *spt = 1;
-  }
-  // the only one modification of CKeyListenerLin.killer_flag_, so should be no
-  // race condition
+  XEvent evt = makeClientMessageEvent("killer");
+  XSendEvent(X11Display_, MessageWindow, false, NoEventMask, &evt);
 }
 
 } // namespace NSLinux

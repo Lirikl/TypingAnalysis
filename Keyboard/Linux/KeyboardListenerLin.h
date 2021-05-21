@@ -4,12 +4,16 @@
 #include "Keyboard/AnyKeyboardKiller.h"
 
 #include "KeysymMaker.h"
+#include "TimerAccess.h"
+#include "Keyboard/KeyboardHandler.h"
 #include <QObject>
 #include <QThread>
 #include <future>
 #include <iostream>
 #include <memory>
+#include <string.h>
 #include <string>
+#include <unistd.h>
 
 namespace NSApplication {
 namespace NSKeyboard {
@@ -35,7 +39,8 @@ public:
   XkbDescPtr XkbDesc_;
 };
 
-class CKeyboardListenerLinImpl : public QObject, public CKeyboardListenerImplDesc {
+class CKeyboardListenerLinImpl : public QObject,
+                                 public CKeyboardListenerImplDesc {
   Q_OBJECT
 
   friend class CKiller;
@@ -53,29 +58,31 @@ public:
   int exec();
 
 private:
+  Window MessageWindow_;
   CKeysymMaker KeysymMaker_;
   CKeysymMaker DeadLabelMaker_;
-  std::shared_ptr<int> killer_flag_;
   int handleKeyPress(XGenericEventCookie*);
   int handleKeyRelease(XGenericEventCookie*);
-  int isInteruptionRequested();
   XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*);
   xkb_keycode_t getKeycode(XIDeviceEvent*);
   QString makeTextFromKeysym(xkb_keysym_t);
   QChar getLabel(xkb_keysym_t);
   int isLastDead();
+  int isInteruptionRequested(XEvent&);
   xkb_keysym_t getLastKeysym();
   // Implementation details
 };
 
 // The object provides a way to shut down the listener
 class CKiller {
-  std::weak_ptr<int> killer_flag_;
+  Display* X11Display_;
+  Window MessageWindow;
 
 public:
-  CKiller(std::shared_ptr<int>);
+  CKiller(Display*, Window);
   // CKiller(...)
   void stopListener() const;
+  XEvent makeClientMessageEvent(const char*) const;
 
 private:
   // Implementation details
