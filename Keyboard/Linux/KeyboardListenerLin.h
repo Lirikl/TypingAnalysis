@@ -10,9 +10,7 @@
 #include <QThread>
 #include <future>
 #include <iostream>
-#include <memory>
 #include <string.h>
-#include <string>
 #include <unistd.h>
 
 namespace NSApplication {

@@ -6,7 +6,6 @@
 #include <QString>
 #include <QThread>
 #include <clocale>
-#include <optional>
 
 namespace NSApplication {
 namespace NSKeyboard {
