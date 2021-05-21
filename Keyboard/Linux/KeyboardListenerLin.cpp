@@ -57,13 +57,12 @@ CKeyboardListenerLinImpl::~CKeyboardListenerLinImpl() {
   disconnect(this, &CKeyboardListenerLinImpl::KeyReleasing, nullptr, nullptr);
   XDestroyWindow(X11Display_, MessageWindow_);
 }
-void sendKillMessage(Display* xconn, Window xwin);
 
-int CKeyboardListenerLinImpl::isInteruptionRequested(XEvent& ev) {
+int CKeyboardListenerLinImpl::isInteruptionRequested(XEvent& ev) const {
   return (ev.type == ClientMessage) && !strcmp(ev.xclient.data.b, "kill");
 }
 
-int CKeyboardListenerLinImpl::exec() {
+int CKeyboardListenerLinImpl::exec(){
   // TO DO
   // Message loop
   XEvent X11CurrentEvent;
@@ -121,26 +120,26 @@ int CKeyboardListenerLinImpl::handleKeyRelease(
 }
 
 XIDeviceEvent* CKeyboardListenerLinImpl::getXIDeviceEvent(
-    XGenericEventCookie* X11CurrentEventCookie) {
+    XGenericEventCookie* X11CurrentEventCookie) const{
   return static_cast<XIDeviceEvent*>(X11CurrentEventCookie->data);
 }
 
-QString CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) {
+QString CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) const {
   char result_string[33] = "";
   xkb_keysym_to_utf8(keysym, result_string, 33);
   return QString::fromUtf8(result_string, -1);
 }
 
 xkb_keycode_t
-CKeyboardListenerLinImpl::getKeycode(XIDeviceEvent* X11CurrentDeviceEvent) {
+CKeyboardListenerLinImpl::getKeycode(XIDeviceEvent* X11CurrentDeviceEvent) const {
   return X11CurrentDeviceEvent->detail;
 }
 
-int CKeyboardListenerLinImpl::isLastDead() {
+int CKeyboardListenerLinImpl::isLastDead() const {
   return KeysymMaker_.isLastDead_;
 }
 
-QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
+QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym){
   if (isLastDead()) {
     DeadLabelMaker_.resetState();
     DeadLabelMaker_.feedKeysym(keysym);

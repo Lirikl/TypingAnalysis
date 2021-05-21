@@ -38,18 +38,18 @@ public:
   xkb_keysym_t feedEvent(XIDeviceEvent*);
   xkb_keysym_t feedKeysym(xkb_keysym_t);
   void resetState();
-  xkb_keycode_t getKeycode(XIDeviceEvent*);
-  xkb_keysym_t getPlainKeysym(XIDeviceEvent*);
+  xkb_keycode_t getKeycode(XIDeviceEvent*) const;
+  xkb_keysym_t getPlainKeysym(XIDeviceEvent*) const;
   int LastKeysym_;
   int isLastDead_;
   XkbDescPtr XkbDesc_;
 
 private:
-  int getMod(XIDeviceEvent* DeviceEvent, int group_effective);
-  int getGroup(XIDeviceEvent*);
-  int getWidth(xkb_keycode_t);
-  int getKt(xkb_keycode_t, int group_effective);
-  int getShiftLevel(XIDeviceEvent*);
+  int getMod(XIDeviceEvent* DeviceEvent, int group_effective) const;
+  int getGroup(XIDeviceEvent*) const;
+  int getWidth(xkb_keycode_t) const;
+  int getKt(xkb_keycode_t, int group_effective) const;
+  int getShiftLevel(XIDeviceEvent*) const;
 };
 
 } // namespace NSLinux

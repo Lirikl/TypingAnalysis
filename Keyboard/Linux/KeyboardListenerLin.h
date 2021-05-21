@@ -63,13 +63,13 @@ private:
   CKeysymMaker DeadLabelMaker_;
   int handleKeyPress(XGenericEventCookie*);
   int handleKeyRelease(XGenericEventCookie*);
-  XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*);
-  xkb_keycode_t getKeycode(XIDeviceEvent*);
-  QString makeTextFromKeysym(xkb_keysym_t);
+  XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*) const;
+  xkb_keycode_t getKeycode(XIDeviceEvent*) const;
+  QString makeTextFromKeysym(xkb_keysym_t) const;
   QChar getLabel(xkb_keysym_t);
-  int isLastDead();
-  int isInteruptionRequested(XEvent&);
-  xkb_keysym_t getLastKeysym();
+  int isLastDead() const;
+  int isInteruptionRequested(XEvent&) const;
+  xkb_keysym_t getLastKeysym() const;
   // Implementation details
 };
 
