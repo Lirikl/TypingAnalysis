@@ -1,7 +1,7 @@
 #ifndef NSAPPLICATION_NSKEYBOARD_NSLINUX_CKEYBOARDLISTENERLIN_H
 #define NSAPPLICATION_NSKEYBOARD_NSLINUX_CKEYBOARDLISTENERLIN_H
 
-#include "KeyPositionLin.h"
+#include "KeyPositionMaker.h"
 #include "Keyboard/AnyKeyboardKiller.h"
 #include "KeysymMaker.h"
 #include <QObject>
@@ -65,7 +65,7 @@ public:
 private:
   CKeysymMaker KeysymMaker_;
   CKeysymMaker DeadLabelMaker_;
-  CKeyPositionLin PositionMaker_;
+  CKeyPositionMaker PositionMaker_;
   class XGenericEventCookieWrapper{
   public:
     XGenericEventCookieWrapper(Display*, XEvent*);

@@ -1,10 +1,10 @@
-#include "KeyPositionLin.h"
+#include "KeyPositionMaker.h"
 
 namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
 
-CKeyPosition CKeyPositionLin::make(int code) {
+CKeyPosition CKeyPositionMaker::make(int code) {
   CKeyPosition result;
   switch (code) {
   case 0:

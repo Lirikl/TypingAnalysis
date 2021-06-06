@@ -7,9 +7,8 @@ namespace NSApplication {
 namespace NSKeyboard {
 namespace NSLinux {
 
-class CKeyPositionLin {
+class CKeyPositionMaker {
 public:
-  CKeyPositionLin() = default;
   CKeyPosition make(int code);
 };
 

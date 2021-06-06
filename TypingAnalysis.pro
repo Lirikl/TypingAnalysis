@@ -143,15 +143,15 @@ macx {
 
 linux {
     HEADERS += \
+    Keyboard/Linux/KeyPositionMaker.h \
     Keyboard/Linux/KeyboardListenerLin.h \    
     Keyboard/Linux/KeysymMaker.h \
-    Keyboard/Linux/KeyPositionLin.h \
     Keyboard/Linux/x11includes.h
 
     SOURCES += \
+    Keyboard/Linux/KeyPositionMaker.cpp \
     Keyboard/Linux/KeyboardListenerLin.cpp \    
-    Keyboard/Linux/KeysymMaker.cpp \
-    Keyboard/Linux/KeyPositionLin.cpp
+    Keyboard/Linux/KeysymMaker.cpp
 
 }
 
