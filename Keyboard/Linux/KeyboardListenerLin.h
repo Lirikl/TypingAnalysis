@@ -3,13 +3,9 @@
 
 #include "Keyboard/AnyKeyboardKiller.h"
 #include "KeysymMaker.h"
-#include "Keyboard/KeyboardHandler.h"
 #include "KeyPositionLin.h"
 #include <QObject>
 #include <future>
-#include <iostream>
-#include <string.h>
-#include <unistd.h>
 
 namespace NSApplication {
 namespace NSKeyboard {

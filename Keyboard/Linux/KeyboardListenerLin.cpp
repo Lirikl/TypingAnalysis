@@ -1,5 +1,9 @@
 #include "KeyboardListenerLin.h"
 #include "TimerAccess.h"
+#include "Keyboard/KeyboardHandler.h"
+#include <iostream>
+#include <string.h>
+#include <unistd.h>
 
 namespace NSApplication {
 namespace NSKeyboard {
