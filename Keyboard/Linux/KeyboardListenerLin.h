@@ -1,9 +1,9 @@
 #ifndef NSAPPLICATION_NSKEYBOARD_NSLINUX_CKEYBOARDLISTENERLIN_H
 #define NSAPPLICATION_NSKEYBOARD_NSLINUX_CKEYBOARDLISTENERLIN_H
 
+#include "KeyPositionLin.h"
 #include "Keyboard/AnyKeyboardKiller.h"
 #include "KeysymMaker.h"
-#include "KeyPositionLin.h"
 #include <QObject>
 #include <future>
 
@@ -21,6 +21,7 @@ class CKeyboardListenerImplDisplay {
 public:
   CKeyboardListenerImplDisplay();
   ~CKeyboardListenerImplDisplay();
+
 protected:
   Display* X11Display_;
 };
@@ -29,6 +30,7 @@ class CKeyboardListenerImplDesc : protected CKeyboardListenerImplDisplay {
 public:
   CKeyboardListenerImplDesc();
   ~CKeyboardListenerImplDesc();
+
 protected:
   XkbDescPtr XkbDesc_;
 };
@@ -69,17 +71,14 @@ private:
 
 // The object provides a way to shut down the listener
 class CKiller {
-  Display* X11Display_;
-  Window MessageWindow;
-
 public:
   CKiller(Display*, Window);
-  // CKiller(...)
   void stopListener() const;
-  XEvent makeClientMessageEvent(const char*) const;
 
 private:
-  // Implementation details
+  Display* X11Display_;
+  Window MessageWindow_;
+  XEvent makeClientMessageEvent(const char*) const;
 };
 
 } // namespace NSLinux
