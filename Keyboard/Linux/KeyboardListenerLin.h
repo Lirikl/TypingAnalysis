@@ -61,13 +61,12 @@ private:
   CKeyPositionLin PositionMaker_;
   int handleKeyPress(XGenericEventCookie*);
   int handleKeyRelease(XGenericEventCookie*);
+  int isInteruptionRequested(XEvent&) const;
   XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*) const;
   xkb_keycode_t getKeycode(XIDeviceEvent*) const;
   QString makeTextFromKeysym(xkb_keysym_t) const;
-  QChar getLabel(xkb_keysym_t);
   int isLastDead() const;
-  int isInteruptionRequested(XEvent&) const;
-  xkb_keysym_t getLastKeysym() const;
+  QChar getLabel(xkb_keysym_t);
   // Implementation details
 };
 
