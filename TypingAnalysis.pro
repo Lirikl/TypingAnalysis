@@ -35,7 +35,6 @@ win32 {
 linux {
   LIBS += -lX11 \
         -lXi \
-        -lxcb \
         -lxkbcommon
   linux-g++*{
   }
