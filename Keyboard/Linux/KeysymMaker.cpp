@@ -77,6 +77,9 @@ int CKeysymMaker::getMod(XIDeviceEvent* DeviceEvent, int kt) const {
   return DeviceEvent->mods.effective & XkbDesc_->map->types[kt].mods.mask;
 }
 
+// returns current group,
+// can be not equal to group_effective for sime modifier keys
+//(always group 0 for them)
 int CKeysymMaker::getGroup(XIDeviceEvent* DeviceEvent) const {
   xkb_keycode_t keycode = getKeycode(DeviceEvent);
   int group_effective = DeviceEvent->group.effective;
@@ -85,10 +88,12 @@ int CKeysymMaker::getGroup(XIDeviceEvent* DeviceEvent) const {
   return group_effective;
 }
 
+// returns number of shiftLevels per keycode
 int CKeysymMaker::getWidth(xkb_keycode_t keycode) const {
   return XkbDesc_->map->key_sym_map[keycode].width;
 }
 
+// returns type of keycode, determining mod combinations for shift level
 int CKeysymMaker::getKt(xkb_keycode_t keycode, int group_effective) const {
   return XkbDesc_->map->key_sym_map[keycode].kt_index[group_effective];
 }
@@ -103,6 +108,8 @@ int CKeysymMaker::getShiftLevel(XIDeviceEvent* DeviceEvent) const {
   int kt = getKt(keycode, group_effective);
   int effective_mods = getMod(DeviceEvent, kt);
   int shift_level = 0;
+  // iterates through array of all meaningful mod combinations, unitl finds
+  // mods the same as effective
   for (int i = 0; i < XkbDesc_->map->types[kt].map_count; i++) {
     if (XkbDesc_->map->types[kt].map[i].mods.mask == effective_mods) {
       return shift_level = XkbDesc_->map->types[kt].map[i].level;
@@ -110,7 +117,6 @@ int CKeysymMaker::getShiftLevel(XIDeviceEvent* DeviceEvent) const {
   }
   return shift_level;
 }
-
 
 } // namespace NSLinux
 } // namespace NSKeyboard
