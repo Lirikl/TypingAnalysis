@@ -1,6 +1,6 @@
 #include "KeyboardListenerLin.h"
-#include "TimerAccess.h"
 #include "Keyboard/KeyboardHandler.h"
+#include "TimerAccess.h"
 #include <iostream>
 #include <string.h>
 #include <unistd.h>
@@ -25,11 +25,19 @@ CKeyboardListenerImplDesc::CKeyboardListenerImplDesc()
 CKeyboardListenerImplDesc::~CKeyboardListenerImplDesc() {
   XkbFreeKeyboard(XkbDesc_, XkbAllComponentsMask, 1);
 }
+
+CKeyboardListenerImplWindow::CKeyboardListenerImplWindow()
+    : MessageWindow_(XCreateSimpleWindow(
+          X11Display_, DefaultRootWindow(X11Display_), 0, 0, 1, 1, 0, 0, 0)) {
+}
+
+CKeyboardListenerImplWindow::~CKeyboardListenerImplWindow() {
+  XDestroyWindow(X11Display_, MessageWindow_);
+}
+
 CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
     CAnyKillerPromise killerPromise, CKeyboardHandler* KeyboardHandler)
-    : MessageWindow_(XCreateSimpleWindow(
-          X11Display_, DefaultRootWindow(X11Display_), 0, 0, 1, 1, 0, 0, 0)),
-      KeysymMaker_(XkbDesc_), DeadLabelMaker_(XkbDesc_) {
+    : KeysymMaker_(XkbDesc_), DeadLabelMaker_(XkbDesc_) {
 
   Window X11DefaultWindow = DefaultRootWindow(X11Display_);
   XIEventMask X11EventMask_;
@@ -60,35 +68,47 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
 CKeyboardListenerLinImpl::~CKeyboardListenerLinImpl() {
   disconnect(this, &CKeyboardListenerLinImpl::KeyPressing, nullptr, nullptr);
   disconnect(this, &CKeyboardListenerLinImpl::KeyReleasing, nullptr, nullptr);
-  XDestroyWindow(X11Display_, MessageWindow_);
+}
+
+CKeyboardListenerLinImpl::XGenericEventCookieWrapper::
+    XGenericEventCookieWrapper(Display* dpy, XEvent* ev)
+    : cookie_(reinterpret_cast<XGenericEventCookie*>(ev)), dpy_(dpy) {
+  cookie_ = (XGenericEventCookie*)ev;
+  XGetEventData(dpy_, cookie_);
+}
+
+CKeyboardListenerLinImpl::XGenericEventCookieWrapper::
+    ~XGenericEventCookieWrapper() {
+  XFreeEventData(dpy_, cookie_);
+}
+
+XGenericEventCookie*
+CKeyboardListenerLinImpl::XGenericEventCookieWrapper::getPtr() {
+  return cookie_;
 }
 
 int CKeyboardListenerLinImpl::exec() {
   // TO DO
   // Message loop
   XEvent X11CurrentEvent;
-  XGenericEventCookie* X11CurrentEventCookie = &X11CurrentEvent.xcookie;
   while (True) {
     XNextEvent(X11Display_, &X11CurrentEvent);
     if (isInteruptionRequested(X11CurrentEvent)) {
       break;
     }
 
-    if (!XGetEventData(X11Display_, X11CurrentEventCookie)) {
-      continue;
-    }
+    XGenericEventCookieWrapper EventData(X11Display_, &X11CurrentEvent);
 
-    switch (X11CurrentEventCookie->evtype) {
+    switch (EventData.getPtr()->evtype) {
     case XI_KeyPress:
-      handleKeyPress(X11CurrentEventCookie);
+      handleKeyPress(EventData.getPtr());
       break;
     case XI_KeyRelease:
-      handleKeyRelease(X11CurrentEventCookie);
+      handleKeyRelease(EventData.getPtr());
       break;
     default:
       break;
     }
-    XFreeEventData(X11Display_, X11CurrentEventCookie);
   }
   return 0;
 }
@@ -135,8 +155,7 @@ xkb_keycode_t CKeyboardListenerLinImpl::getKeycode(
   return X11CurrentDeviceEvent->detail;
 }
 
-QString
-CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) {
+QString CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) {
   buf_[0] = '\0';
   xkb_keysym_to_utf8(keysym, buf_, buf_len_);
   return QString::fromUtf8(buf_, -1);

@@ -35,8 +35,17 @@ protected:
   XkbDescPtr XkbDesc_;
 };
 
+class CKeyboardListenerImplWindow : protected CKeyboardListenerImplDesc {
+public:
+  CKeyboardListenerImplWindow();
+  ~CKeyboardListenerImplWindow();
+
+protected:
+  Window MessageWindow_;
+};
+
 class CKeyboardListenerLinImpl : public QObject,
-                                 protected CKeyboardListenerImplDesc {
+                                 protected CKeyboardListenerImplWindow {
   Q_OBJECT
 
   friend class CKiller;
@@ -54,10 +63,20 @@ public:
   int exec();
 
 private:
-  Window MessageWindow_;
   CKeysymMaker KeysymMaker_;
   CKeysymMaker DeadLabelMaker_;
   CKeyPositionLin PositionMaker_;
+  class XGenericEventCookieWrapper{
+  public:
+    XGenericEventCookieWrapper(Display*, XEvent*);
+    ~XGenericEventCookieWrapper();
+    XGenericEventCookie* getPtr();
+
+  private:
+    XGenericEventCookie* cookie_;
+    Display* dpy_;
+  };
+
   int handleKeyPress(XGenericEventCookie*);
   int handleKeyRelease(XGenericEventCookie*);
   int isInteruptionRequested(XEvent&) const;
