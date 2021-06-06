@@ -36,45 +36,7 @@ void CKeysymMaker::resetState() {
   xkb_compose_state_reset(XkbComposeState_);
 }
 
-xkb_keycode_t CKeysymMaker::getKeycode(XIDeviceEvent* DeviceEvent) const{
-  return DeviceEvent->detail;
-}
-
-int CKeysymMaker::getGroup(XIDeviceEvent* DeviceEvent) const{
-  xkb_keycode_t keycode = getKeycode(DeviceEvent);
-  int group_effective = DeviceEvent->group.effective;
-  if (group_effective >= (int)XkbDesc_->map->key_sym_map[keycode].group_info)
-    group_effective = (int)XkbDesc_->map->key_sym_map[keycode].group_info - 1;
-  return group_effective;
-}
-
-int CKeysymMaker::getWidth(xkb_keycode_t keycode) const{
-  return XkbDesc_->map->key_sym_map[keycode].width;
-}
-
-int CKeysymMaker::getKt(xkb_keycode_t keycode, int group_effective) const{
-  return XkbDesc_->map->key_sym_map[keycode].kt_index[group_effective];
-}
-
-int CKeysymMaker::getMod(XIDeviceEvent* DeviceEvent, int kt) const{
-  return DeviceEvent->mods.effective & XkbDesc_->map->types[kt].mods.mask;
-}
-
-int CKeysymMaker::getShiftLevel(XIDeviceEvent* DeviceEvent) const{
-  xkb_keycode_t keycode = getKeycode(DeviceEvent);
-  int group_effective = getGroup(DeviceEvent);
-  int kt = getKt(keycode, group_effective);
-  int effective_mods = getMod(DeviceEvent, kt);
-  int shift_level = 0;
-  for (int i = 0; i < XkbDesc_->map->types[kt].map_count; i++) {
-    if (XkbDesc_->map->types[kt].map[i].mods.mask == effective_mods) {
-      return shift_level = XkbDesc_->map->types[kt].map[i].level;
-    }
-  }
-  return shift_level;
-}
-
-xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) const{
+xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) const {
   xkb_keycode_t keycode = getKeycode(DeviceEvent);
   int group_effective = getGroup(DeviceEvent);
   int width = getWidth(keycode);
@@ -105,6 +67,44 @@ xkb_keysym_t CKeysymMaker::feedKeysym(xkb_keysym_t keysym) {
     }
   }
   return LastKeysym_;
+}
+
+int CKeysymMaker::getMod(XIDeviceEvent* DeviceEvent, int kt) const {
+  return DeviceEvent->mods.effective & XkbDesc_->map->types[kt].mods.mask;
+}
+
+int CKeysymMaker::getGroup(XIDeviceEvent* DeviceEvent) const {
+  xkb_keycode_t keycode = getKeycode(DeviceEvent);
+  int group_effective = DeviceEvent->group.effective;
+  if (group_effective >= (int)XkbDesc_->map->key_sym_map[keycode].group_info)
+    group_effective = (int)XkbDesc_->map->key_sym_map[keycode].group_info - 1;
+  return group_effective;
+}
+
+int CKeysymMaker::getWidth(xkb_keycode_t keycode) const {
+  return XkbDesc_->map->key_sym_map[keycode].width;
+}
+
+int CKeysymMaker::getKt(xkb_keycode_t keycode, int group_effective) const {
+  return XkbDesc_->map->key_sym_map[keycode].kt_index[group_effective];
+}
+
+xkb_keycode_t CKeysymMaker::getKeycode(XIDeviceEvent* DeviceEvent) const {
+  return DeviceEvent->detail;
+}
+
+int CKeysymMaker::getShiftLevel(XIDeviceEvent* DeviceEvent) const {
+  xkb_keycode_t keycode = getKeycode(DeviceEvent);
+  int group_effective = getGroup(DeviceEvent);
+  int kt = getKt(keycode, group_effective);
+  int effective_mods = getMod(DeviceEvent, kt);
+  int shift_level = 0;
+  for (int i = 0; i < XkbDesc_->map->types[kt].map_count; i++) {
+    if (XkbDesc_->map->types[kt].map[i].mods.mask == effective_mods) {
+      return shift_level = XkbDesc_->map->types[kt].map[i].level;
+    }
+  }
+  return shift_level;
 }
 } // namespace NSLinux
 } // namespace NSKeyboard

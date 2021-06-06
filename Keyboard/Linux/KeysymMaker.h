@@ -30,11 +30,10 @@ public:
 class CKeysymMaker : public CKeysymMakerState {
 public:
   CKeysymMaker(XkbDescPtr);
+  void resetState();
+  xkb_keysym_t getPlainKeysym(XIDeviceEvent*) const;
   xkb_keysym_t feedEvent(XIDeviceEvent*);
   xkb_keysym_t feedKeysym(xkb_keysym_t);
-  void resetState();
-  xkb_keycode_t getKeycode(XIDeviceEvent*) const;
-  xkb_keysym_t getPlainKeysym(XIDeviceEvent*) const;
   int LastKeysym_;
   int isLastDead_;
   XkbDescPtr XkbDesc_;
@@ -44,6 +43,7 @@ private:
   int getGroup(XIDeviceEvent*) const;
   int getWidth(xkb_keycode_t) const;
   int getKt(xkb_keycode_t, int group_effective) const;
+  xkb_keycode_t getKeycode(XIDeviceEvent*) const;
   int getShiftLevel(XIDeviceEvent*) const;
 };
 
