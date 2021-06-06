@@ -36,6 +36,7 @@ linux {
   LIBS += -lX11 \
         -lXi \
         -lxkbcommon
+
   linux-g++*{
   }
 

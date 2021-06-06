@@ -12,11 +12,20 @@ CKeysymMakerContext::~CKeysymMakerContext() {
   xkb_context_unref(XkbContext_);
 }
 
+#ifdef QT_NO_DEBUG
 CKeysymMakerTable::CKeysymMakerTable()
     : XkbComposeTable_(xkb_compose_table_new_from_locale(
           XkbContext_, std::setlocale(LC_ALL, ""),
           XKB_COMPOSE_COMPILE_NO_FLAGS)) {
 }
+#else
+CKeysymMakerTable::CKeysymMakerTable()
+    : XkbComposeTable_(xkb_compose_table_new_from_locale(
+          XkbContext_, std::setlocale(LC_ALL, "ru_RU.UTF-8"),
+          XKB_COMPOSE_COMPILE_NO_FLAGS)) {
+}
+#endif
+
 CKeysymMakerTable::~CKeysymMakerTable() {
   xkb_compose_table_unref(XkbComposeTable_);
 }
