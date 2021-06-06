@@ -16,7 +16,7 @@ protected:
   xkb_context* XkbContext_;
 };
 
-class CKeysymMakerTable : public CKeysymMakerContext {
+class CKeysymMakerTable : protected CKeysymMakerContext {
 public:
   CKeysymMakerTable();
   ~CKeysymMakerTable();
@@ -25,7 +25,7 @@ protected:
   xkb_compose_table* XkbComposeTable_;
 };
 
-class CKeysymMakerState : public CKeysymMakerTable {
+class CKeysymMakerState : protected CKeysymMakerTable {
 public:
   CKeysymMakerState();
   ~CKeysymMakerState();
@@ -33,29 +33,25 @@ public:
   xkb_compose_state* XkbComposeState_;
 };
 
-class CKeysymMaker : public CKeysymMakerState {
+class CKeysymMaker : protected CKeysymMakerState {
 public:
   CKeysymMaker(XkbDescPtr);
   void resetState();
   xkb_keysym_t getPlainKeysym(XIDeviceEvent*) const;
   xkb_keysym_t feedEvent(XIDeviceEvent*);
   xkb_keysym_t feedKeysym(xkb_keysym_t);
+  int isLastDead() const;
 
 private:
   int LastKeysym_;
   int isLastDead_;
   XkbDescPtr XkbDesc_;
-
-private:
   int getMod(XIDeviceEvent* DeviceEvent, int group_effective) const;
   int getGroup(XIDeviceEvent*) const;
   int getWidth(xkb_keycode_t) const;
   int getKt(xkb_keycode_t, int group_effective) const;
   xkb_keycode_t getKeycode(XIDeviceEvent*) const;
   int getShiftLevel(XIDeviceEvent*) const;
-
-public:
-  int isLastDead() const;
 };
 
 } // namespace NSLinux
