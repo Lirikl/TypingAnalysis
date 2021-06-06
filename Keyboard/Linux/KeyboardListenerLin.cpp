@@ -152,11 +152,10 @@ QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
     DeadLabelMaker_.feedKeysym(keysym);
     keysym = DeadLabelMaker_.feedKeysym(keysym);
     QString str = makeTextFromKeysym(keysym);
-    if (str.size() != 0 && str[0].isPrint()) {
+    if (str.size() == 0 || str[0].isPrint()) {
       return QChar();
     }
     return str[0];
-    // return QChar(0x2620);
   }
   if (std::string(XKeysymToString(keysym)) == "Return")
     return QChar(0x2ba0);
