@@ -2,9 +2,6 @@
 #define KEYSYMMAKER_H
 
 #include "x11includes.h"
-#include <QObject>
-#include <QString>
-#include <QThread>
 #include <clocale>
 
 namespace NSApplication {

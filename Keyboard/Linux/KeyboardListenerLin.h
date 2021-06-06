@@ -7,7 +7,6 @@
 #include "Keyboard/KeyboardHandler.h"
 #include "KeyPositionLin.h"
 #include <QObject>
-#include <QThread>
 #include <future>
 #include <iostream>
 #include <string.h>
