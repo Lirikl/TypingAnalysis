@@ -94,7 +94,7 @@ int CKeyboardListenerLinImpl::exec() {
 }
 
 int CKeyboardListenerLinImpl::isInteruptionRequested(XEvent& ev) const {
-  return (ev.type == ClientMessage) && !strcmp(ev.xclient.data.b, "kill");
+  return (ev.type == ClientMessage) && !strcmp(ev.xclient.data.b, kKillerMsg_);
 }
 
 int CKeyboardListenerLinImpl::handleKeyPress(
@@ -136,10 +136,10 @@ xkb_keycode_t CKeyboardListenerLinImpl::getKeycode(
 }
 
 QString
-CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) const {
-  char result_string[33] = "";
-  xkb_keysym_to_utf8(keysym, result_string, 33);
-  return QString::fromUtf8(result_string, -1);
+CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) {
+  buf_[0] = '\0';
+  xkb_keysym_to_utf8(keysym, buf_, buf_len_);
+  return QString::fromUtf8(buf_, -1);
 }
 
 bool CKeyboardListenerLinImpl::isLastDead() const {
@@ -152,7 +152,7 @@ QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
     DeadLabelMaker_.feedKeysym(keysym);
     keysym = DeadLabelMaker_.feedKeysym(keysym);
     QString str = makeTextFromKeysym(keysym);
-    if (str.size() == 0 && str[0].isPrint()) {
+    if (str.size() != 0 && str[0].isPrint()) {
       return QChar();
     }
     return str[0];
@@ -193,7 +193,7 @@ CKiller::CKiller(Display* dpy, Window wnd)
 }
 
 void CKiller::stopListener() const {
-  XEvent evt = makeClientMessageEvent("kill");
+  XEvent evt = makeClientMessageEvent(CKeyboardListenerLinImpl::kKillerMsg_);
   XSendEvent(X11Display_, MessageWindow_, false, NoEventMask, &evt);
 }
 
