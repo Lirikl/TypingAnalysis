@@ -40,11 +40,11 @@ public:
   xkb_keysym_t getPlainKeysym(XIDeviceEvent*) const;
   xkb_keysym_t feedEvent(XIDeviceEvent*);
   xkb_keysym_t feedKeysym(xkb_keysym_t);
-  int isLastDead() const;
+  bool isLastDead() const;
 
 private:
   int LastKeysym_;
-  int isLastDead_;
+  bool isLastDead_;
   XkbDescPtr XkbDesc_;
   int getMod(XIDeviceEvent* DeviceEvent, int group_effective) const;
   int getGroup(XIDeviceEvent*) const;

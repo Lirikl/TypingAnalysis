@@ -67,7 +67,7 @@ private:
   XIDeviceEvent* getXIDeviceEvent(XGenericEventCookie*) const;
   xkb_keycode_t getKeycode(XIDeviceEvent*) const;
   QString makeTextFromKeysym(xkb_keysym_t) const;
-  int isLastDead() const;
+  bool isLastDead() const;
   QChar getLabel(xkb_keysym_t);
   // Implementation details
 };

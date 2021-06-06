@@ -69,6 +69,10 @@ xkb_keysym_t CKeysymMaker::feedKeysym(xkb_keysym_t keysym) {
   return LastKeysym_;
 }
 
+bool CKeysymMaker::isLastDead() const {
+  return isLastDead_;
+}
+
 int CKeysymMaker::getMod(XIDeviceEvent* DeviceEvent, int kt) const {
   return DeviceEvent->mods.effective & XkbDesc_->map->types[kt].mods.mask;
 }
@@ -107,9 +111,6 @@ int CKeysymMaker::getShiftLevel(XIDeviceEvent* DeviceEvent) const {
   return shift_level;
 }
 
-int CKeysymMaker::isLastDead() const {
-  return isLastDead_;
-}
 
 } // namespace NSLinux
 } // namespace NSKeyboard

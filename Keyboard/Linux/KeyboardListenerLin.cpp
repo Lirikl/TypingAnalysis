@@ -63,7 +63,7 @@ int CKeyboardListenerLinImpl::exec() {
   // Message loop
   XEvent X11CurrentEvent;
   XGenericEventCookie* X11CurrentEventCookie = &X11CurrentEvent.xcookie;
-  while (1) {
+  while (True) {
     XNextEvent(X11Display_, &X11CurrentEvent);
     if (isInteruptionRequested(X11CurrentEvent)) {
       break;
@@ -137,7 +137,7 @@ CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) const {
   return QString::fromUtf8(result_string, -1);
 }
 
-int CKeyboardListenerLinImpl::isLastDead() const {
+bool CKeyboardListenerLinImpl::isLastDead() const {
   return KeysymMaker_.isLastDead();
 }
 
