@@ -187,6 +187,15 @@ QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
   return str[0];
 }
 
+CKiller::CKiller(Display* dpy, Window wnd)
+    : X11Display_(dpy), MessageWindow_(wnd) {
+  assert(dpy);
+}
+
+void CKiller::stopListener() const {
+  XEvent evt = makeClientMessageEvent("kill");
+  XSendEvent(X11Display_, MessageWindow_, false, NoEventMask, &evt);
+}
 
 XEvent CKiller::makeClientMessageEvent(const char* text) const {
   XEvent evt;
@@ -197,15 +206,6 @@ XEvent CKiller::makeClientMessageEvent(const char* text) const {
   evt.xclient.window = MessageWindow_;
   strncpy(evt.xclient.data.b, text, sizeof(evt.xclient.data.b));
   return evt;
-}
-
-CKiller::CKiller(Display* dpy, Window wnd)
-    : X11Display_(dpy), MessageWindow_(wnd) {
-}
-
-void CKiller::stopListener() const {
-  XEvent evt = makeClientMessageEvent("kill");
-  XSendEvent(X11Display_, MessageWindow_, false, NoEventMask, &evt);
 }
 
 } // namespace NSLinux
