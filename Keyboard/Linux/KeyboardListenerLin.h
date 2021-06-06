@@ -30,7 +30,7 @@ protected:
   Display* X11Display_;
 };
 
-class CKeyboardListenerImplDesc : public CKeyboardListenerImplDisplay {
+class CKeyboardListenerImplDesc : protected CKeyboardListenerImplDisplay {
 public:
   CKeyboardListenerImplDesc();
   ~CKeyboardListenerImplDesc();
@@ -39,7 +39,7 @@ protected:
 };
 
 class CKeyboardListenerLinImpl : public QObject,
-                                 public CKeyboardListenerImplDesc {
+                                 protected CKeyboardListenerImplDesc {
   Q_OBJECT
 
   friend class CKiller;
