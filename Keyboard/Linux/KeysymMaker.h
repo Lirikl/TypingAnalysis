@@ -11,6 +11,8 @@ class CKeysymMakerContext {
 public:
   CKeysymMakerContext();
   ~CKeysymMakerContext();
+
+protected:
   xkb_context* XkbContext_;
 };
 
@@ -18,12 +20,16 @@ class CKeysymMakerTable : public CKeysymMakerContext {
 public:
   CKeysymMakerTable();
   ~CKeysymMakerTable();
+
+protected:
   xkb_compose_table* XkbComposeTable_;
 };
+
 class CKeysymMakerState : public CKeysymMakerTable {
 public:
   CKeysymMakerState();
   ~CKeysymMakerState();
+
   xkb_compose_state* XkbComposeState_;
 };
 
@@ -34,6 +40,8 @@ public:
   xkb_keysym_t getPlainKeysym(XIDeviceEvent*) const;
   xkb_keysym_t feedEvent(XIDeviceEvent*);
   xkb_keysym_t feedKeysym(xkb_keysym_t);
+
+private:
   int LastKeysym_;
   int isLastDead_;
   XkbDescPtr XkbDesc_;
@@ -45,6 +53,9 @@ private:
   int getKt(xkb_keycode_t, int group_effective) const;
   xkb_keycode_t getKeycode(XIDeviceEvent*) const;
   int getShiftLevel(XIDeviceEvent*) const;
+
+public:
+  int isLastDead() const;
 };
 
 } // namespace NSLinux

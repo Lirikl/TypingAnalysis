@@ -26,6 +26,7 @@ class CKeyboardListenerImplDisplay {
 public:
   CKeyboardListenerImplDisplay();
   ~CKeyboardListenerImplDisplay();
+protected:
   Display* X11Display_;
 };
 
@@ -33,6 +34,7 @@ class CKeyboardListenerImplDesc : public CKeyboardListenerImplDisplay {
 public:
   CKeyboardListenerImplDesc();
   ~CKeyboardListenerImplDesc();
+protected:
   XkbDescPtr XkbDesc_;
 };
 

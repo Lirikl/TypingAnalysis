@@ -138,7 +138,7 @@ CKeyboardListenerLinImpl::makeTextFromKeysym(xkb_keysym_t keysym) const {
 }
 
 int CKeyboardListenerLinImpl::isLastDead() const {
-  return KeysymMaker_.isLastDead_;
+  return KeysymMaker_.isLastDead();
 }
 
 QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
@@ -204,7 +204,7 @@ CKiller::CKiller(Display* dpy, Window wnd)
 }
 
 void CKiller::stopListener() const {
-  XEvent evt = makeClientMessageEvent("killer");
+  XEvent evt = makeClientMessageEvent("kill");
   XSendEvent(X11Display_, MessageWindow, false, NoEventMask, &evt);
 }
 

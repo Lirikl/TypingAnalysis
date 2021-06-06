@@ -106,6 +106,11 @@ int CKeysymMaker::getShiftLevel(XIDeviceEvent* DeviceEvent) const {
   }
   return shift_level;
 }
+
+int CKeysymMaker::isLastDead() const {
+  return isLastDead_;
+}
+
 } // namespace NSLinux
 } // namespace NSKeyboard
 } // namespace NSApplication
