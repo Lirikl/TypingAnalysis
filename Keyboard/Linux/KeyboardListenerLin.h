@@ -3,7 +3,6 @@
 
 #include "Keyboard/AnyKeyboardKiller.h"
 #include "KeysymMaker.h"
-#include "TimerAccess.h"
 #include "Keyboard/KeyboardHandler.h"
 #include "KeyPositionLin.h"
 #include <QObject>
