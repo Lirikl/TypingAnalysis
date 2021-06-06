@@ -22,6 +22,11 @@ public:
   CKeyboardListenerImplDisplay();
   ~CKeyboardListenerImplDisplay();
 
+  CKeyboardListenerImplDisplay(const CKeyboardListenerImplDisplay&) = delete;
+  CKeyboardListenerImplDisplay(CKeyboardListenerImplDisplay&&) noexcept = delete;
+  CKeyboardListenerImplDisplay& operator=(const CKeyboardListenerImplDisplay&) = delete;
+  CKeyboardListenerImplDisplay& operator=(CKeyboardListenerImplDisplay&&) noexcept = delete;
+
 protected:
   Display* X11Display_;
 };

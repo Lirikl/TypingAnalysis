@@ -11,6 +11,10 @@ class CKeysymMakerContext {
 public:
   CKeysymMakerContext();
   ~CKeysymMakerContext();
+  CKeysymMakerContext(const CKeysymMakerContext&) = delete;
+  CKeysymMakerContext(CKeysymMakerContext&&) noexcept = delete;
+  CKeysymMakerContext& operator=(const CKeysymMakerContext&) = delete;
+  CKeysymMakerContext& operator=(CKeysymMakerContext&&) noexcept = delete;
 
 protected:
   xkb_context* XkbContext_;
