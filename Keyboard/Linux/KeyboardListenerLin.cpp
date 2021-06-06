@@ -88,17 +88,11 @@ CKeyboardListenerLinImpl::XGenericEventCookieWrapper::getPtr() {
 }
 
 int CKeyboardListenerLinImpl::exec() {
-  // TO DO
   // Message loop
   XEvent X11CurrentEvent;
-  while (True) {
-    XNextEvent(X11Display_, &X11CurrentEvent);
-    if (isInteruptionRequested(X11CurrentEvent)) {
-      break;
-    }
-
+  while (!XNextEvent(X11Display_, &X11CurrentEvent) &&
+         !isInteruptionRequested(X11CurrentEvent)) {
     XGenericEventCookieWrapper EventData(X11Display_, &X11CurrentEvent);
-
     switch (EventData.getPtr()->evtype) {
     case XI_KeyPress:
       handleKeyPress(EventData.getPtr());
