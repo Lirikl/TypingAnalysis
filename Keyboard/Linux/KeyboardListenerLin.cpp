@@ -160,6 +160,9 @@ bool CKeyboardListenerLinImpl::isLastDead() const {
 }
 
 QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
+  if (keysym == NoSymbol) {
+    return QChar();
+  }
   if (isLastDead()) {
     DeadLabelMaker_.resetState();
     DeadLabelMaker_.feedKeysym(keysym);
@@ -193,6 +196,8 @@ QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
   if (std::string(XKeysymToString(keysym)) == "Escape")
     return QChar(0x2bbe);
   QString str = makeTextFromKeysym(keysym);
+
+
   if (str.size() == 0 || !str[0].isPrint()) {
     return QChar();
   }

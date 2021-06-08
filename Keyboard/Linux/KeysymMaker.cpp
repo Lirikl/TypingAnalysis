@@ -57,7 +57,12 @@ xkb_keysym_t CKeysymMaker::getPlainKeysym(XIDeviceEvent* DeviceEvent) const {
 }
 
 xkb_keysym_t CKeysymMaker::feedEvent(XIDeviceEvent* DeviceEvent) {
-  return feedKeysym(getPlainKeysym(DeviceEvent));
+  xkb_keysym_t keysym = getPlainKeysym(DeviceEvent);
+  if (isIgnored(DeviceEvent)) {
+    isLastDead_ = 0;
+    return NoSymbol;
+  }
+  return feedKeysym(keysym);
 }
 
 xkb_keysym_t CKeysymMaker::feedKeysym(xkb_keysym_t keysym) {
@@ -80,6 +85,10 @@ xkb_keysym_t CKeysymMaker::feedKeysym(xkb_keysym_t keysym) {
 
 bool CKeysymMaker::isLastDead() const {
   return isLastDead_;
+}
+
+bool CKeysymMaker::isIgnored(XIDeviceEvent* DeviceEvent) const {
+  return DeviceEvent->mods.effective & (ControlMask | Mod1Mask);
 }
 
 int CKeysymMaker::getMod(XIDeviceEvent* DeviceEvent, int kt) const {

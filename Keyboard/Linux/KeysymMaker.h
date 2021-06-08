@@ -50,6 +50,7 @@ private:
   int LastKeysym_;
   bool isLastDead_;
   XkbDescPtr XkbDesc_;
+  bool isIgnored(XIDeviceEvent*) const;
   int getMod(XIDeviceEvent* DeviceEvent, int group_effective) const;
   int getGroup(XIDeviceEvent*) const;
   int getWidth(xkb_keycode_t) const;
