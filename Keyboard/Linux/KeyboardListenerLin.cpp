@@ -46,8 +46,7 @@ CKeyboardListenerLinImpl::CKeyboardListenerLinImpl(
   std::vector<unsigned char> safeArray(X11EventMask_.mask_len);
   X11EventMask_.mask = safeArray.data();
   std::fill(X11EventMask_.mask, X11EventMask_.mask + X11EventMask_.mask_len, 0);
-  XISetMask(X11EventMask_.mask,
-            XI_KeyPress); // maybe it should me moved from constructor into Do?
+  XISetMask(X11EventMask_.mask, XI_KeyPress);
   XISetMask(X11EventMask_.mask, XI_KeyRelease);
 
   XISelectEvents(X11Display_, X11DefaultWindow, &X11EventMask_, 1);
@@ -124,6 +123,8 @@ int CKeyboardListenerLinImpl::handleKeyPress(
       PositionMaker_.make(getKeycode(X11CurrentDeviceEvent));
   key_press.KeyLabel = getLabel(keysym);
   emit KeyPressing(key_press);
+  //key_press.Time = Timer->get() - key_press.Time;
+  //emit KeyPressing(key_press);
   return 0;
 }
 
@@ -136,6 +137,8 @@ int CKeyboardListenerLinImpl::handleKeyRelease(
       getXIDeviceEvent(X11CurrentEventCookie);
   key_release.KeyPosition = getKeycode(X11CurrentDeviceEvent);
   emit KeyReleasing(key_release);
+  //key_release.Time = Timer->get() - key_release.Time;
+  //emit KeyReleasing(key_release);
   return 0;
 }
 
@@ -196,7 +199,6 @@ QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
   if (std::string(XKeysymToString(keysym)) == "Escape")
     return QChar(0x2bbe);
   QString str = makeTextFromKeysym(keysym);
-
 
   if (str.size() == 0 || !str[0].isPrint()) {
     return QChar();
