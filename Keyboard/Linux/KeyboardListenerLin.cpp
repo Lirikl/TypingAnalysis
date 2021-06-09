@@ -123,8 +123,8 @@ int CKeyboardListenerLinImpl::handleKeyPress(
       PositionMaker_.make(getKeycode(X11CurrentDeviceEvent));
   key_press.KeyLabel = getLabel(keysym);
   emit KeyPressing(key_press);
-  //key_press.Time = Timer->get() - key_press.Time;
-  //emit KeyPressing(key_press);
+  // key_press.Time = Timer->get() - key_press.Time;
+  // emit KeyPressing(key_press);
   return 0;
 }
 
@@ -137,8 +137,8 @@ int CKeyboardListenerLinImpl::handleKeyRelease(
       getXIDeviceEvent(X11CurrentEventCookie);
   key_release.KeyPosition = getKeycode(X11CurrentDeviceEvent);
   emit KeyReleasing(key_release);
-  //key_release.Time = Timer->get() - key_release.Time;
-  //emit KeyReleasing(key_release);
+  // key_release.Time = Timer->get() - key_release.Time;
+  // emit KeyReleasing(key_release);
   return 0;
 }
 
@@ -178,6 +178,8 @@ QChar CKeyboardListenerLinImpl::getLabel(xkb_keysym_t keysym) {
   }
   if (std::string(XKeysymToString(keysym)) == "Return")
     return QChar(0x2ba0);
+  if (std::string(XKeysymToString(keysym)) == "space")
+    return QChar(0x2423);
   if (std::string(XKeysymToString(keysym)) == "Control_L")
     return QChar(0x2343);
   if (std::string(XKeysymToString(keysym)) == "Control_R")
