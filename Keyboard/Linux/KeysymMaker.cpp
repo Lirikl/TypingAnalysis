@@ -72,15 +72,15 @@ xkb_keysym_t CKeysymMaker::feedKeysym(xkb_keysym_t keysym) {
   isLastDead_ = 0;
   if (XkbComposeFeedResult == XKB_COMPOSE_FEED_ACCEPTED) {
     isLastDead_ = (compose_status == XKB_COMPOSE_COMPOSING);
-    std::cout <<"st: "<<compose_status<<std::endl;
-    if (compose_status == XKB_COMPOSE_COMPOSING) {
-      return LastKeysym_;
-    }
-    if (compose_status == XKB_COMPOSE_CANCELLED) {
-      return LastKeysym_ = NoSymbol;
-    }
-    if (compose_status == XKB_COMPOSE_COMPOSED) {
-      return LastKeysym_ = xkb_compose_state_get_one_sym(XkbComposeState_);
+    switch (compose_status){
+    case XKB_COMPOSE_COMPOSING:
+       return LastKeysym_;
+    case XKB_COMPOSE_CANCELLED:
+       return LastKeysym_ = NoSymbol;
+    case XKB_COMPOSE_COMPOSED:
+       return LastKeysym_ = xkb_compose_state_get_one_sym(XkbComposeState_);
+    default:
+      break;
     }
   }
   return LastKeysym_;
