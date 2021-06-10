@@ -33,6 +33,10 @@ win32 {
 }
 
 linux {
+  LIBS += -lX11 \
+        -lXi \
+        -lxkbcommon
+
   linux-g++*{
   }
 
@@ -140,10 +144,16 @@ macx {
 
 linux {
     HEADERS += \
-    Keyboard/Linux/KeyboardListenerLin.h
+    Keyboard/Linux/KeyPositionMaker.h \
+    Keyboard/Linux/KeyboardListenerLin.h \    
+    Keyboard/Linux/KeysymMaker.h \
+    Keyboard/Linux/x11includes.h
 
     SOURCES += \
-    Keyboard/Linux/KeyboardListenerLin.cpp
+    Keyboard/Linux/KeyPositionMaker.cpp \
+    Keyboard/Linux/KeyboardListenerLin.cpp \    
+    Keyboard/Linux/KeysymMaker.cpp
+
 }
 
 contains(DEFINES, KEYBOARD_HANDLER_DEBUG) {
